@@ -1,0 +1,12 @@
+{
+    "dynamic": "strict",
+    "properties": {
+        "target": {
+            "type": "keyword",
+            "index": false
+        },
+        "migrations": {
+            "enabled": false
+        }
+    }
+}

@@ -1,0 +1,26 @@
+satbased.security.event_store:
+  connector: daikon.event_store
+  settings:
+    database: ${project.prefix}%2Bsatbased-security
+
+satbased.security.projection_store:
+  connector: daikon.projection_store
+  settings:
+    index_prefix: ${project.prefix}.satbased-security
+
+satbased.security.filesystem:
+  connector: daikon.filesystem
+  settings:
+    mounts:
+      migration:
+        adapter: League\Flysystem\Adapter\Local
+        location: ${crates.satbased.security.migration_dir}
+      fixture:
+        adapter: League\Flysystem\Adapter\Local
+        location: ${crates.satbased.security.fixture_dir}
+
+satbased.security.message_queue:
+  connector: daikon.message_queue
+
+satbased.security.message_queue.admin:
+  connector: daikon.message_queue.admin

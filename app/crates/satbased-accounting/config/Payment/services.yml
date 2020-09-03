@@ -1,0 +1,51 @@
+daikon:
+  command_router:
+    commands:
+      satbased.accounting.payment:
+        Satbased\Accounting\Payment\Cancel\CancelPayment: Satbased\Accounting\CommandHandler\PaymentCommandHandler
+        Satbased\Accounting\Payment\Complete\CompletePayment: Satbased\Accounting\CommandHandler\PaymentCommandHandler
+        Satbased\Accounting\Payment\Fail\FailPayment: Satbased\Accounting\CommandHandler\PaymentCommandHandler
+        Satbased\Accounting\Payment\Make\MakePayment: Satbased\Accounting\CommandHandler\PaymentCommandHandler
+        Satbased\Accounting\Payment\Receive\ReceivePayment: Satbased\Accounting\CommandHandler\PaymentCommandHandler
+        Satbased\Accounting\Payment\Request\RequestPayment: Satbased\Accounting\CommandHandler\PaymentCommandHandler
+        Satbased\Accounting\Payment\Select\SelectPayment: Satbased\Accounting\CommandHandler\PaymentCommandHandler
+        Satbased\Accounting\Payment\Send\SendPayment: Satbased\Accounting\CommandHandler\PaymentCommandHandler
+        Satbased\Accounting\Payment\Settle\SettlePayment: Satbased\Accounting\CommandHandler\PaymentCommandHandler
+
+satbased:
+  payment_manager:
+    class: Satbased\Accounting\PaymentManager
+    subscriptions:
+      payment_in_sub:
+        channel: events
+        transport: inproc
+        guards:
+          - NGUtech\Bitcoin\Message\BitcoinBlockHashReceived
+          - NGUtech\Lightningd\Message\LightningdInvoiceSettled
+          - NGUtech\Lightningd\Message\LightningdPaymentSucceeded
+          - NGUtech\Lnd\Message\LndInvoiceAccepted
+          - NGUtech\Lnd\Message\LndInvoiceCancelled
+          - NGUtech\Lnd\Message\LndInvoiceSettled
+          - Satbased\Accounting\Payment\Select\PaymentSelected
+          - Satbased\Accounting\Payment\Send\PaymentSent
+      payment_out_sub:
+        channel: events
+        transport: message_queue
+        enrichers:
+          - class: Daikon\AsyncJob\Metadata\JobMetadataEnricher
+            settings:
+              job: satbased.accounting.messages
+        guards:
+          - Satbased\Accounting\Payment\Make\PaymentMade
+  payment_rescan_manager:
+    class: Satbased\Accounting\PaymentRescanManager
+    subscriptions:
+      rescan_sub:
+        channel: events
+        transport: message_queue
+        enrichers:
+          - class: Daikon\AsyncJob\Metadata\JobMetadataEnricher
+            settings:
+              job: satbased.accounting.messages
+        guards:
+          - Satbased\Accounting\Payment\Rescan\PaymentRescanned

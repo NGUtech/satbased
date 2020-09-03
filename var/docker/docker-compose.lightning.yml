@@ -1,0 +1,130 @@
+version: "3.2"
+
+secrets:
+  lightning.yml:
+    file: ../secrets/default/lightning.yml
+
+volumes:
+  alice_data:
+  bob_data:
+  carol_data:
+
+services:
+  php:
+    secrets:
+      - lightning.yml
+    depends_on:
+      - alice
+      - carol
+    volumes:
+      - alice_data:/lnd:ro
+      - carol_data:/clightning:ro
+
+  alice:
+    container_name: ${COMPOSE_PROJECT_NAME}_alice
+    image: bitcoinstack/lnd:0.10.4-alpine
+    restart: unless-stopped
+    command: [
+      "--noseedbackup",
+      "--alias=alice",
+      "--listen=0.0.0.0:${ALICE_PORT}",
+      "--rpclisten=0.0.0.0:${ALICE_RPC_PORT}",
+      "--restlisten=0.0.0.0:${ALICE_REST_PORT}",
+      "--tlsextradomain=${ALICE_HOST}",
+      "--tlsextraip=0.0.0.0",
+      "--autopilot.allocation=0",
+      "--accept-keysend",
+      "--bitcoin.active",
+      "--bitcoin.regtest",
+      "--bitcoin.node=bitcoind",
+      "--bitcoind.rpchost=${BITCOIN_HOST}:${BITCOIN_RPC_PORT}",
+      "--bitcoind.rpcuser=${BITCOIN_RPC_USER}",
+      "--bitcoind.rpcpass=${BITCOIN_RPC_PASSWORD}",
+      "--bitcoind.zmqpubrawtx=tcp://${BITCOIN_HOST}:${BITCOIN_ZMQ_TX_PORT}",
+      "--bitcoind.zmqpubrawblock=tcp://${BITCOIN_HOST}:${BITCOIN_ZMQ_BLOCK_PORT}"
+    ]
+    depends_on:
+      - bitcoin
+    ports:
+      - "127.0.0.1:${ALICE_RPC_PORT}:${ALICE_RPC_PORT}"
+      - "127.0.0.1:${ALICE_REST_PORT}:${ALICE_REST_PORT}"
+    volumes:
+      - alice_data:/home/lnd/.lnd
+
+  alice_relay:
+    container_name: ${COMPOSE_PROJECT_NAME}_alice_relay
+    image: ngutech/relay:0.1
+    build: ./relay
+    restart: unless-stopped
+    command: ['node', '-r', 'esm', 'lnd-relay.js']
+    depends_on:
+      - alice
+      - rabbitmq
+    environment:
+      - ALICE_HOST
+      - ALICE_RPC_PORT
+      - RABBITMQ_HOST
+      - RABBITMQ_PORT
+      - RABBITMQ_DEFAULT_USER
+      - RABBITMQ_DEFAULT_PASS
+      - LIGHTNING_RELAY_DELAY
+    volumes:
+      - ./lnd/scripts:/usr/src/app
+      - alice_data:/lnd:ro
+
+  bob:
+    container_name: ${COMPOSE_PROJECT_NAME}_bob
+    image: bitcoinstack/lnd:0.10.4-alpine
+    restart: unless-stopped
+    command: [
+      "--noseedbackup",
+      "--alias=bob",
+      "--listen=0.0.0.0:${BOB_PORT}",
+      "--rpclisten=0.0.0.0:${BOB_RPC_PORT}",
+      "--restlisten=0.0.0.0:${BOB_REST_PORT}",
+      "--tlsextradomain=${BOB_HOST}",
+      "--tlsextraip=0.0.0.0",
+      "--autopilot.allocation=0",
+      "--bitcoin.active",
+      "--bitcoin.regtest",
+      "--bitcoin.node=bitcoind",
+      "--bitcoind.rpchost=${BITCOIN_HOST}:${BITCOIN_RPC_PORT}",
+      "--bitcoind.rpcuser=${BITCOIN_RPC_USER}",
+      "--bitcoind.rpcpass=${BITCOIN_RPC_PASSWORD}",
+      "--bitcoind.zmqpubrawtx=tcp://${BITCOIN_HOST}:${BITCOIN_ZMQ_TX_PORT}",
+      "--bitcoind.zmqpubrawblock=tcp://${BITCOIN_HOST}:${BITCOIN_ZMQ_BLOCK_PORT}"
+    ]
+    depends_on:
+      - bitcoin
+    ports:
+      - "127.0.0.1:${BOB_RPC_PORT}:${BOB_RPC_PORT}"
+      - "127.0.0.1:${BOB_REST_PORT}:${BOB_REST_PORT}"
+    volumes:
+      - bob_data:/home/lnd/.lnd
+
+  carol:
+    container_name: ${COMPOSE_PROJECT_NAME}_carol
+    image: bitcoinstack/clightning:0.9.0-1-alpine
+    command: [
+      "--alias=carol",
+      "--network=regtest",
+      "--addr=0.0.0.0:${CAROL_PORT}",
+      "--large-channels",
+      "--bitcoin-cli=/bitcoin/bitcoin-cli",
+      "--bitcoin-datadir=/bitcoin",
+      "--bitcoin-rpcconnect=${BITCOIN_HOST}",
+      "--bitcoin-rpcport=${BITCOIN_RPC_PORT}",
+      "--bitcoin-rpcuser=${BITCOIN_RPC_USER}",
+      "--bitcoin-rpcpassword=${BITCOIN_RPC_PASSWORD}",
+      "--amqp-host=${RABBITMQ_HOST}:${RABBITMQ_PORT}",
+      "--amqp-auth=${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}",
+      "--amqp-exchange=lightningd.adapter.exchange",
+      "--amqp-delay=${LIGHTNING_RELAY_DELAY}",
+      "--amqp-notifications=invoice_payment,sendpay_success"
+    ]
+    depends_on:
+      - bitcoin
+    volumes:
+      - carol_data:/home/clightning/.lightning
+      - ./lightningd/plugins:/home/clightning/.lightning/plugins
+      - bitcoin_shared:/bitcoin

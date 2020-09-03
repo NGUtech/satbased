@@ -1,0 +1,23 @@
+storage_adapters:
+  satbased.security.profile.standard:
+    class: Daikon\Elasticsearch7\Storage\Elasticsearch7StorageAdapter
+    connector: satbased.security.projection_store
+    settings:
+      index: ${project.prefix}.satbased-security.profile.standard
+
+repositories:
+   satbased.security.profile.standard:
+     class: Satbased\Security\ReadModel\Standard\ProfileRepository
+     storage_adapter: satbased.security.profile.standard
+
+projectors:
+  satbased.security.profile.standard:
+    class: Daikon\Boot\ReadModel\StandardProjector
+    repository: satbased.security.profile.standard
+    events:
+      - Satbased\Security\Profile\Close\ProfileClosed
+      - Satbased\Security\Profile\Login\ProfileLoggedIn
+      - Satbased\Security\Profile\Logout\ProfileLoggedOut
+      - Satbased\Security\Profile\Promote\ProfilePromoted
+      - Satbased\Security\Profile\Register\ProfileRegistered
+      - Satbased\Security\Profile\Verify\ProfileVerified

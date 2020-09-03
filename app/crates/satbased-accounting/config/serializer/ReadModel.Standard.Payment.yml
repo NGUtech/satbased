@@ -1,0 +1,49 @@
+Satbased\Accounting\ReadModel\Standard\Payment:
+  exclusion_policy: ALL
+  discriminator:
+    field_name: '@type'
+    map:
+      Satbased\Accounting\ReadModel\Standard\Payment: Satbased\Accounting\ReadModel\Standard\Payment
+  virtual_properties:
+    getPaymentId:
+      type: ValueObject
+    getRevision:
+      type: ValueObject
+    getProfileId:
+      type: ValueObject
+    getAccountId:
+      type: ValueObject
+    getReferences:
+      type: ValueObject
+    getAccepts:
+      type: ValueObject
+    getAmount:
+      type: ValueObject
+    getDescription:
+      type: ValueObject
+    getService:
+      type: ValueObject
+    getTransaction:
+      type: ValueObject
+    getState:
+      type: ValueObject
+    getDirection:
+      type: ValueObject
+    getRequestedAt:
+      type: ValueObject
+    getExpiresAt:
+      type: ValueObject
+    getSelectedAt:
+      type: ValueObject
+    getReceivedAt:
+      type: ValueObject
+    getSettledAt:
+      type: ValueObject
+    getCompletedAt:
+      type: ValueObject
+    getCancelledAt:
+      type: ValueObject
+    getFailedAt:
+      type: ValueObject
+    getSentAt:
+      type: ValueObject

@@ -1,0 +1,9 @@
+modules:
+  config:
+    \Helper\Api:
+      url: http://local.satbased.com
+      email: satbased.com
+      cookies:
+        domain: .local.satbased.com
+        jwt: dev-_jwt
+        xsrf: dev-_xsrf

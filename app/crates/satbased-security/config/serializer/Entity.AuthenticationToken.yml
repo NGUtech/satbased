@@ -1,0 +1,13 @@
+Satbased\Security\Entity\AuthenticationToken:
+  exclusion_policy: ALL
+  discriminator:
+    field_name: '@type'
+    map:
+      Satbased\Security\Entity\AuthenticationToken: Satbased\Security\Entity\AuthenticationToken
+  virtual_properties:
+    getId:
+      type: ValueObject
+    getToken:
+      type: ValueObject
+    getExpiresAt:
+      type: ValueObject

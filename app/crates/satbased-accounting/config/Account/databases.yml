@@ -1,0 +1,17 @@
+storage_adapters:
+  satbased.accounting.account:
+    class: Daikon\CouchDb\Storage\CouchDbStorageAdapter
+    connector: satbased.accounting.event_store
+    settings:
+      design_doc: satbased-accounting-account
+
+stream_stores:
+  satbased.accounting.account:
+    class: Daikon\CouchDb\Storage\CouchDbStreamStorage
+    storage_adapter: satbased.accounting.account
+
+units_of_work:
+  satbased.accounting.account:
+    class: Daikon\EventSourcing\EventStore\UnitOfWork
+    stream_store: satbased.accounting.account
+    aggregate_root: Satbased\Accounting\Account\Account

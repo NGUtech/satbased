@@ -1,0 +1,6 @@
+satbased.accounting:
+  fixture_dir: crates:satbased-accounting/fixture/test
+  preimage_secret: changeme
+
+satbased.security:
+  fixture_dir: crates:satbased-security/fixture/test

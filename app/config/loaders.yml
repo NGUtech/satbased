@@ -1,0 +1,10 @@
+payments:
+  loader: Daikon\Config\YamlConfigLoader
+  locations:
+    - ${crates.*.config_dir}
+    - ${app.config_dir}
+  sources:
+    - payments.yml
+    - payments.${app.context}.yml
+    - payments.${app.env}.yml
+    - payments.${app.context}.${app.env}.yml

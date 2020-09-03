@@ -1,0 +1,40 @@
+version: "3.2"
+
+volumes:
+  couchdb_data:
+  elasticsearch_data:
+
+services:
+  nginx:
+    volumes:
+      - ../..:/var/www
+
+  php:
+    volumes:
+      - ../..:/var/www
+
+  couchdb:
+    volumes:
+      - couchdb_data:/opt/couchdb/data
+
+  elasticsearch:
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    environment:
+      - node.name=${APP_HOST}
+      - transport.host=127.0.0.1
+      - http.host=0.0.0.0
+      - http.cors.enabled=true
+      - http.cors.allow-origin=*
+      - http.cors.allow-headers=Authorization
+      - xpack.watcher.enabled=false
+      - xpack.monitoring.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+
+  kibana:
+    container_name: ${COMPOSE_PROJECT_NAME}_kibana
+    image: docker.elastic.co/kibana/kibana:7.9.0
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200

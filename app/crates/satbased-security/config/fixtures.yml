@@ -1,0 +1,11 @@
+fixture_loaders:
+  satbased.security.profile:
+    class: Daikon\Boot\Fixture\FlysystemFixtureLoader
+    connector: satbased.security.filesystem
+    settings:
+      location: fixture://profile
+
+fixture_targets:
+  satbased.security.profile:
+    enabled: true
+    fixture_loader: satbased.security.profile

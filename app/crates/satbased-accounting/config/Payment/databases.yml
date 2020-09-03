@@ -1,0 +1,17 @@
+storage_adapters:
+  satbased.accounting.payment:
+    class: Daikon\CouchDb\Storage\CouchDbStorageAdapter
+    connector: satbased.accounting.event_store
+    settings:
+      design_doc: satbased-accounting-payment
+
+stream_stores:
+  satbased.accounting.payment:
+    class: Daikon\CouchDb\Storage\CouchDbStreamStorage
+    storage_adapter: satbased.accounting.payment
+
+units_of_work:
+  satbased.accounting.payment:
+    class: Daikon\EventSourcing\EventStore\UnitOfWork
+    stream_store: satbased.accounting.payment
+    aggregate_root: Satbased\Accounting\Payment\Payment

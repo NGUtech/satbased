@@ -1,0 +1,8 @@
+job_strategies:
+  satbased.accounting.backoff:
+    class: Satbased\Job\DelayAndRetryWithExponentialBackoff
+    settings:
+      limit: 2
+      initial: 1000
+      backoff: 5000
+      backoff_limit: 10000

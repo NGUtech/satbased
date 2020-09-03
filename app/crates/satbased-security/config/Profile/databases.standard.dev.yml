@@ -1,0 +1,5 @@
+storage_adapters:
+  satbased.security.profile.standard:
+    settings:
+      write:
+        refresh: true

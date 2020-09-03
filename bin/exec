@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+source .env
+
+while [[ "$1" == -* ]]; do
+    EXEC_OPTS+=" $1"
+    shift
+done
+
+docker-compose exec $EXEC_OPTS "$@"

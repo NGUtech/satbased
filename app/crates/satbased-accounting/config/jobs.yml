@@ -1,0 +1,16 @@
+job_strategies:
+  satbased.accounting.backoff:
+    class: Satbased\Job\DelayAndRetryWithExponentialBackoff
+    settings:
+      limit: 24
+      initial: 10000 #delay also allows time for search engine to refresh
+      backoff: 10000
+      backoff_limit: 600000
+
+jobs:
+  satbased.accounting.messages:
+    class: Daikon\AsyncJob\Job\JobDefinition
+    job_strategy: satbased.accounting.backoff
+    settings:
+      exchange: satbased.accounting.exchange
+      routing_key: satbased.accounting.messages

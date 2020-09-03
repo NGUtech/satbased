@@ -1,0 +1,29 @@
+#
+# Project settings for the api context
+#
+
+negotiation:
+  content_types:
+    json:
+      extension: ['json']
+      mime-type: ['application/json']
+      charset: false
+
+cors:
+  enabled: true
+  scheme: http #${app.scheme}
+  host: nginx #${app.host}
+  port: 8000 #${app.port}
+  request:
+    allowed_origins: ['http://nginx:8000']
+    allowed_headers: ['accept', 'authorization', 'origin', 'content-type', 'x-xsrf-token']
+    allowed_methods: ['GET', 'POST']
+    allowed_credentials: true
+  response:
+    preflight_cache_max_age: 600
+    exposed_headers:
+      - Access-Control-Allow-Origin
+      - Access-Control-Allow-Credentials
+      - Access-Control-Max-Age
+      - Content-Range
+      - Vary

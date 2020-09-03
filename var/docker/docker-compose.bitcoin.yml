@@ -1,0 +1,69 @@
+version: "3.2"
+
+secrets:
+  bitcoin.yml:
+    file: ../secrets/default/bitcoin.yml
+
+volumes:
+  bitcoin_data:
+  bitcoin_shared:
+
+services:
+  php:
+    secrets:
+      - bitcoin.yml
+    depends_on:
+      - bitcoin
+
+  bitcoin:
+    container_name: ${COMPOSE_PROJECT_NAME}_bitcoin
+    image: bitcoinstack/bitcoin:0.20.1-alpine
+    restart: unless-stopped
+    command: [
+      "-regtest=1",
+      "-upnp=0",
+      "-server=1",
+      "-txindex=1",
+      "-onlynet=ipv4",
+      "-dnsseed=0",
+      "-dbcache=10",
+      "-port=${BITCOIN_PORT}",
+      "-rpcport=${BITCOIN_RPC_PORT}",
+      "-rpcuser=${BITCOIN_RPC_USER}",
+      "-rpcpassword=${BITCOIN_RPC_PASSWORD}",
+      "-rpcallowip=0.0.0.0/0",
+      "-rpcbind=127.0.0.1",
+      "-rpcbind=${BITCOIN_HOST}",
+      "-zmqpubrawtx=tcp://0.0.0.0:${BITCOIN_ZMQ_TX_PORT}",
+      "-zmqpubhashtx=tcp://0.0.0.0:${BITCOIN_ZMQ_TX_PORT}",
+      "-zmqpubrawblock=tcp://0.0.0.0:${BITCOIN_ZMQ_BLOCK_PORT}",
+      "-zmqpubhashblock=tcp://0.0.0.0:${BITCOIN_ZMQ_BLOCK_PORT}"
+    ]
+    ports:
+      - "127.0.0.1:${BITCOIN_RPC_PORT}:${BITCOIN_RPC_PORT}"
+    volumes:
+      - bitcoin_data:/home/bitcoin/.bitcoin
+      - bitcoin_shared:/opt/bitcoin/bin
+
+  bitcoin_relay:
+    container_name: ${COMPOSE_PROJECT_NAME}_bitcoin_relay
+    image: ngutech/relay:0.1
+    build: ./relay
+    restart: unless-stopped
+    command: ['node', '-r', 'esm', 'bitcoin-relay.js']
+    depends_on:
+      - bitcoin
+      - rabbitmq
+    environment:
+      - BITCOIN_HOST
+      - BITCOIN_RPC_PORT
+      - BITCOIN_RPC_USER
+      - BITCOIN_RPC_PASSWORD
+      - BITCOIN_ZMQ_TX_PORT
+      - BITCOIN_ZMQ_BLOCK_PORT
+      - RABBITMQ_HOST
+      - RABBITMQ_PORT
+      - RABBITMQ_DEFAULT_USER
+      - RABBITMQ_DEFAULT_PASS
+    volumes:
+      - ./bitcoind/scripts:/usr/src/app

@@ -1,0 +1,26 @@
+services:
+  transfer:
+    class: Satbased\Accounting\Payment\TransferService
+
+  lightning:
+    class: NGUtech\Lightningd\Service\LightningdService
+    connector: lightningd.adapter.rpc
+    settings:
+      send:
+        minimum: 100SAT
+        riskfactor: 1
+        exemptfee: 5SAT
+        timeout: 30
+
+  bitcoin:
+    class: NGUtech\Bitcoind\Service\BitcoindService
+    connector: bitcoind.adapter.rpc
+    settings:
+      send:
+        change_type: bech32
+        minimum: 50000SAT
+        rbf: true
+      request:
+        address_type: bech32
+        conf_target: 3
+        minimum: 50000SAT

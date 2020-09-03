@@ -1,0 +1,34 @@
+migration_loaders:
+  satbased.security.event_store:
+    class: Daikon\Flysystem\Migration\FlysystemMigrationLoader
+    connector: satbased.security.filesystem
+    settings:
+      location: migration://couchdb
+
+  satbased.security.projection_store:
+    class: Daikon\Flysystem\Migration\FlysystemMigrationLoader
+    connector: satbased.security.filesystem
+    settings:
+      location: migration://elasticsearch
+
+migration_adapters:
+  satbased.security.event_store:
+    class: Daikon\CouchDb\Migration\CouchDbMigrationAdapter
+    connector: satbased.security.event_store
+
+  satbased.security.projection_store:
+    class: Daikon\Elasticsearch7\Migration\Elasticsearch7MigrationAdapter
+    connector: satbased.security.projection_store
+    settings:
+      index: ${project.prefix}.satbased-security.migration_list
+
+migration_targets:
+  satbased.security.event_store:
+    enabled: true
+    migration_adapter: satbased.security.event_store
+    migration_loader: satbased.security.event_store
+
+  satbased.security.projection_store:
+    enabled: true
+    migration_adapter: satbased.security.projection_store
+    migration_loader: satbased.security.projection_store

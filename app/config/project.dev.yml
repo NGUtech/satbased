@@ -1,0 +1,11 @@
+#
+# Project dev settings
+#
+
+authentication:
+  cookies:
+    xsrf:
+      attribute: dev-_xsrf
+    jwt:
+      attribute: dev-_jwt
+      secret: 'changeme'

@@ -1,0 +1,21 @@
+storage_adapters:
+  satbased.accounting.account.standard:
+    class: Daikon\Elasticsearch7\Storage\Elasticsearch7StorageAdapter
+    connector: satbased.accounting.projection_store
+    settings:
+      index: ${project.prefix}.satbased-accounting.account.standard
+
+repositories:
+   satbased.accounting.account.standard:
+     class: Satbased\Accounting\ReadModel\Standard\AccountRepository
+     storage_adapter: satbased.accounting.account.standard
+
+projectors:
+  satbased.accounting.account.standard:
+    class: Daikon\Boot\ReadModel\StandardProjector
+    repository: satbased.accounting.account.standard
+    events:
+      - Satbased\Accounting\Account\Credit\AccountCredited
+      - Satbased\Accounting\Account\Debit\AccountDebited
+      - Satbased\Accounting\Account\Freeze\AccountFrozen
+      - Satbased\Accounting\Account\Open\AccountOpened

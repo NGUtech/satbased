@@ -1,0 +1,14 @@
+#!/bin/bash
+
+source .env
+
+while [[ "$1" == -* ]]; do
+    case "$1" in
+        -d) EXEC_OPTS+=" $1" ;;
+        -T) EXEC_OPTS+=" $1" ;;
+        *) break ;;
+    esac
+    shift
+done
+
+docker-compose exec $EXEC_OPTS php php bin/daikon.php "$@"

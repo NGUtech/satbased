@@ -1,0 +1,43 @@
+{
+    "dynamic": "strict",
+    "dynamic_templates": [
+        {
+            "strings_as_keywords": {
+                "match_mapping_type": "string",
+                "mapping": {
+                    "type": "keyword"
+                }
+            }
+        }
+    ],
+    "properties": {
+        "@type": {
+            "type": "keyword"
+        },
+        "accountId": {
+            "type": "keyword"
+        },
+        "revision": {
+            "type": "keyword",
+            "index": false
+        },
+        "profileId": {
+            "type": "keyword"
+        },
+        "wallet": {
+            "type": "object",
+            "dynamic": false
+        },
+        "state": {
+            "type": "keyword"
+        },
+        "openedAt": {
+            "type": "date",
+            "index": false
+        },
+        "frozenAt": {
+            "type": "date",
+            "index": false
+        }
+    }
+}

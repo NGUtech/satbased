@@ -1,0 +1,7 @@
+#
+# Project settings for the api dev context
+#
+
+cors:
+  request:
+    allowed_all_origins: true

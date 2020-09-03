@@ -1,0 +1,26 @@
+satbased.accounting.event_store:
+  connector: daikon.event_store
+  settings:
+    database: ${project.prefix}%2Bsatbased-accounting
+
+satbased.accounting.projection_store:
+  connector: daikon.projection_store
+  settings:
+    index_prefix: ${project.prefix}.satbased-accounting
+
+satbased.accounting.filesystem:
+  connector: daikon.filesystem
+  settings:
+    mounts:
+      migration:
+        adapter: League\Flysystem\Adapter\Local
+        location: ${crates.satbased.accounting.migration_dir}
+      fixture:
+        adapter: League\Flysystem\Adapter\Local
+        location: ${crates.satbased.accounting.fixture_dir}
+
+satbased.accounting.message_queue:
+  connector: daikon.message_queue
+
+satbased.accounting.message_queue.admin:
+  connector: daikon.message_queue.admin

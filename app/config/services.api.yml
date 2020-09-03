@@ -1,0 +1,102 @@
+daikon:
+  http_pipeline:
+    settings:
+      pipeline:
+        - Middlewares\Cors
+        - Middlewares\ContentEncoding
+        - Middlewares\ContentType
+        - Middlewares\ContentLanguage
+        - Middlewares\ContentEncoding
+        - Daikon\Boot\Middleware\RoutingHandler
+        - Daikon\Security\Middleware\JwtDecoder
+        - Daikon\Security\Middleware\JwtAuthenticator
+        - Middlewares\JsonPayload
+        - Daikon\Security\Middleware\SecureActionHandler
+        - Middlewares\RequestHandler
+
+satbased:
+  serializer:
+    class: Daikon\Boot\Serializer\JMSSerializerAdapter
+    provisioner: Daikon\Boot\Service\Provisioner\JMSSerializerServiceProvisioner
+    settings:
+      metadata_dirs:
+        '': ${app.boot_dir}/config/serializer
+        Satbased\Accounting: ${app.crates_dir}/satbased-accounting/config/serializer
+        Satbased\Security: ${app.crates_dir}/satbased-security/config/serializer
+
+  authentication_service:
+    class: Satbased\Security\Api\Profile\ProfileService
+    settings:
+      _alias: Daikon\Security\Authentication\JwtAuthenticationServiceInterface
+
+  authorization_service:
+    settings:
+      resources:
+        # secure actions
+        Satbased\Accounting\Api\Account\My\MyAction:
+          allow:
+            - asserts: [['role.state', 'in', ['pending', 'verified']]]
+        Satbased\Accounting\Api\Account\Resource\ResourceAction:
+          allow:
+            - asserts: [['role.state', 'in', ['pending', 'verified']]]
+        Satbased\Accounting\Api\Payment\Cancel\CancelAction:
+          allow:
+            - asserts: [['role.state', '=', 'verified']]
+        Satbased\Accounting\Api\Payment\Make\MakeAction:
+          allow:
+            - asserts: [['role.state', '=', 'verified']]
+        Satbased\Accounting\Api\Payment\Request\RequestAction:
+          allow:
+            - asserts: [['role.state', '=', 'verified']]
+        Satbased\Accounting\Api\Payment\Resource\ResourceAction:
+          allow:
+            - asserts: [['role.state', '=', 'verified']]
+        Satbased\Accounting\Api\Payment\Rescan\RescanAction:
+          allow:
+            - asserts: [['role.state', '=', 'verified']]
+        Satbased\Accounting\Api\Payment\Search\SearchAction:
+          allow:
+            - asserts: [['role.state', '=', 'verified']]
+        Satbased\Accounting\Api\Payment\Select\SelectAction:
+          allow:
+            - asserts: [['role.state', '=', 'verified']]
+        Satbased\Accounting\Api\Payment\Services\ServicesAction:
+          allow:
+            - asserts: [['role.state', '=', 'verified']]
+        Satbased\Accounting\Api\Payment\Settle\SettleAction:
+          allow:
+            - asserts: [['role.state', '=', 'verified']]
+        Satbased\Security\Api\Profile\Close\CloseAction:
+          allow:
+            - asserts: [['role.state', 'in', ['pending', 'verified']]]
+        Satbased\Security\Api\Profile\Me\MeAction:
+          allow:
+            - asserts: [['role.state', 'in', ['pending', 'verified']]]
+        Satbased\Security\Api\Profile\Promote\PromoteAction:
+          allow:
+            - roles: staff
+              asserts: [['role.state', '=', 'verified']]
+        Satbased\Security\Api\Profile\Resource\ResourceAction:
+          allow:
+            - asserts: [['role.state', 'in', ['pending', 'verified']]]
+        # resource models
+        Satbased\Accounting\ReadModel\Standard\Account:
+          allow:
+            - roles: customer
+              privileges: ['account.resource']
+              asserts: Laminas\Permissions\Acl\Assertion\OwnershipAssertion
+            - roles: staff
+        Satbased\Accounting\ReadModel\Standard\Payment:
+          allow:
+            - roles: customer
+              privileges: ['payment.select']
+            - roles: customer
+              privileges: ['payment.resource', 'payment.settle', 'payment.cancel', 'payment.rescan']
+              asserts: Laminas\Permissions\Acl\Assertion\OwnershipAssertion
+            - roles: staff
+        Satbased\Security\ReadModel\Standard\Profile:
+          allow:
+            - roles: customer
+              privileges: ['profile.resource', 'profile.close']
+              asserts: Laminas\Permissions\Acl\Assertion\OwnershipAssertion
+            - roles: staff

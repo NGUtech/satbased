@@ -1,0 +1,108 @@
+{
+    "dynamic": "strict",
+    "dynamic_templates": [
+        {
+            "strings_as_keywords": {
+                "match_mapping_type": "string",
+                "mapping": {
+                    "type": "keyword"
+                }
+            }
+        }
+    ],
+    "properties": {
+        "@type": {
+            "type": "keyword"
+        },
+        "paymentId": {
+            "type": "keyword"
+        },
+        "revision": {
+            "type": "keyword",
+            "index": false
+        },
+        "profileId": {
+            "type": "keyword"
+        },
+        "accountId": {
+            "type": "keyword"
+        },
+        "accepts": {
+            "type": "keyword",
+            "index": false
+        },
+        "references": {
+            "type": "object",
+            "dynamic": true
+        },
+        "amount": {
+            "type": "keyword",
+            "index": false
+        },
+        "description": {
+            "type": "text",
+            "index": false
+        },
+        "service": {
+            "type": "keyword",
+            "index": false
+        },
+        "transaction": {
+            "type": "object",
+            "dynamic": false,
+            "properties": {
+                "@type": {
+                    "type": "keyword"
+                },
+                "id": {
+                    "type": "keyword"
+                },
+                "preimageHash": {
+                    "type": "keyword"
+                }
+            }
+        },
+        "state": {
+            "type": "keyword"
+        },
+        "direction": {
+            "type": "keyword"
+        },
+        "requestedAt": {
+            "type": "date",
+            "index": false
+        },
+        "expiresAt": {
+            "type": "date",
+            "index": false
+        },
+        "selectedAt": {
+            "type": "date",
+            "index": false
+        },
+        "receivedAt": {
+            "type": "date",
+            "index": false
+        },
+        "settledAt": {
+            "type": "date",
+            "index": false
+        },
+        "completedAt": {
+            "type": "date",
+            "index": false
+        },
+        "cancelledAt": {
+            "type": "date",
+            "index": false
+        },
+        "sentAt": {
+            "type": "date",
+            "index": false
+        },
+        "failedAt": {
+            "type": "date",
+            "index": false
+        }
+    }
+}

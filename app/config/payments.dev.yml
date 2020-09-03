@@ -1,0 +1,42 @@
+services:
+  testtransfer:
+    class: Satbased\Accounting\Payment\TransferService
+
+  testlnd:
+    class: NGUtech\Lnd\Service\LndService
+    connector: lnd.adapter.grpc
+    settings:
+      send:
+        minimum: 100SAT
+        max_parts: 5
+        timeout: 5
+
+  testlnd.hold:
+    class: NGUtech\Lnd\Service\LndHoldService
+    connector: lnd.adapter.grpc
+    settings:
+      send:
+        enabled: false
+
+  testlightningd:
+    class: NGUtech\Lightningd\Service\LightningdService
+    connector: lightningd.adapter.rpc
+    settings:
+      send:
+        riskfactor: 10
+        minimum: 100SAT
+        exemptfee: 1SAT
+        timeout: 5
+
+  testbitcoind:
+    class: NGUtech\Bitcoind\Service\BitcoindService
+    connector: bitcoind.adapter.rpc
+    settings:
+      send:
+        change_type: bech32
+        minimum: 1000SAT
+        rbf: true
+      request:
+        address_type: bech32
+        conf_target: 3
+        minimum: 1000SAT

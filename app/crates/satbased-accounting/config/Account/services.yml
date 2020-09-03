@@ -1,0 +1,24 @@
+daikon:
+  command_router:
+    commands:
+      satbased.accounting.account:
+        Satbased\Accounting\Account\Credit\CreditAccount: Satbased\Accounting\CommandHandler\AccountCommandHandler
+        Satbased\Accounting\Account\Debit\DebitAccount: Satbased\Accounting\CommandHandler\AccountCommandHandler
+        Satbased\Accounting\Account\Freeze\FreezeAccount: Satbased\Accounting\CommandHandler\AccountCommandHandler
+        Satbased\Accounting\Account\Open\OpenAccount: Satbased\Accounting\CommandHandler\AccountCommandHandler
+
+satbased:
+  account_manager:
+    class: Satbased\Accounting\AccountManager
+    subscriptions:
+      account_sub:
+        channel: events
+        transport: inproc
+        guards:
+          - Satbased\Accounting\Payment\Cancel\PaymentCancelled
+          - Satbased\Accounting\Payment\Complete\PaymentCompleted
+          - Satbased\Accounting\Payment\Fail\PaymentFailed
+          - Satbased\Accounting\Payment\Make\PaymentMade
+          - Satbased\Accounting\Payment\Settle\PaymentSettled
+          - Satbased\Security\Profile\Close\ProfileClosed
+          - Satbased\Security\Profile\Register\ProfileRegistered

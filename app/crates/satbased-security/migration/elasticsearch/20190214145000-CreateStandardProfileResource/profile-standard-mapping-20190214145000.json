@@ -1,0 +1,54 @@
+{
+    "dynamic": "strict",
+    "properties": {
+        "@type": {
+            "type": "keyword"
+        },
+        "profileId": {
+            "type": "keyword"
+        },
+        "revision": {
+            "type": "keyword",
+            "index": false
+        },
+        "name": {
+            "type": "text",
+            "index": false
+        },
+        "email": {
+            "type": "keyword"
+        },
+        "passwordHash": {
+            "type": "keyword",
+            "index": false
+        },
+        "language": {
+            "type": "keyword",
+            "index": false
+        },
+        "state": {
+            "type": "keyword"
+        },
+        "role": {
+            "type": "keyword",
+            "index": false
+        },
+        "registeredAt": {
+            "type": "date",
+            "index": false
+        },
+        "verifiedAt": {
+            "type": "date",
+            "index": false
+        },
+        "closedAt": {
+            "type": "date",
+            "index": false
+        },
+        "tokens": {
+            "type": "object",
+            "dynamic": false,
+            "enabled": false
+        }
+    }
+}

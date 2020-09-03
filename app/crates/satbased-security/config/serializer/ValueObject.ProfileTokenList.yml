@@ -1,0 +1,5 @@
+Satbased\Security\ValueObject\ProfileTokenList:
+  exclusion_policy: ALL
+  virtual_properties:
+    unwrap:
+      inline: true

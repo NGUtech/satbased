@@ -1,0 +1,10 @@
+daikon:
+  command_router:
+    commands:
+      satbased.security.profile:
+        Satbased\Security\Profile\Close\CloseProfile: Satbased\Security\CommandHandler\ProfileCommandHandler
+        Satbased\Security\Profile\Login\LoginProfile: Satbased\Security\CommandHandler\ProfileCommandHandler
+        Satbased\Security\Profile\Logout\LogoutProfile: Satbased\Security\CommandHandler\ProfileCommandHandler
+        Satbased\Security\Profile\Promote\PromoteProfile: Satbased\Security\CommandHandler\ProfileCommandHandler
+        Satbased\Security\Profile\Register\RegisterProfile: Satbased\Security\CommandHandler\ProfileCommandHandler
+        Satbased\Security\Profile\Verify\VerifyProfile: Satbased\Security\CommandHandler\ProfileCommandHandler

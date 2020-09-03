@@ -1,0 +1,51 @@
+migration_loaders:
+  satbased.accounting.event_store:
+    class: Daikon\Flysystem\Migration\FlysystemMigrationLoader
+    connector: satbased.accounting.filesystem
+    settings:
+      location: migration://couchdb
+
+  satbased.accounting.projection_store:
+    class: Daikon\Flysystem\Migration\FlysystemMigrationLoader
+    connector: satbased.accounting.filesystem
+    settings:
+      location: migration://elasticsearch
+
+  satbased.accounting.message_queue:
+    class: Daikon\Flysystem\Migration\FlysystemMigrationLoader
+    connector: satbased.accounting.filesystem
+    settings:
+      location: migration://rabbitmq
+
+migration_adapters:
+  satbased.accounting.event_store:
+    class: Daikon\CouchDb\Migration\CouchDbMigrationAdapter
+    connector: satbased.accounting.event_store
+
+  satbased.accounting.projection_store:
+    class: Daikon\Elasticsearch7\Migration\Elasticsearch7MigrationAdapter
+    connector: satbased.accounting.projection_store
+    settings:
+      index: ${project.prefix}.satbased-accounting.migration_list
+
+  satbased.accounting.message_queue:
+    class: Daikon\RabbitMq3\Migration\RabbitMq3MigrationAdapter
+    connector: satbased.accounting.message_queue.admin
+    settings:
+      exchange: satbased.accounting.migration_list
+
+migration_targets:
+  satbased.accounting.event_store:
+    enabled: true
+    migration_adapter: satbased.accounting.event_store
+    migration_loader: satbased.accounting.event_store
+
+  satbased.accounting.projection_store:
+    enabled: true
+    migration_adapter: satbased.accounting.projection_store
+    migration_loader: satbased.accounting.projection_store
+
+  satbased.accounting.message_queue:
+    enabled: true
+    migration_adapter: satbased.accounting.message_queue
+    migration_loader: satbased.accounting.message_queue

@@ -1,0 +1,36 @@
+satbased:
+  authorization_service:
+    class: Daikon\Security\Authorization\LaminasAclService
+    provisioner: Daikon\Security\Authorization\LaminasAclProvisioner
+    settings:
+      roles:
+        unauthenticated: []
+        customer: []
+        staff: ['customer']
+        admin: ['staff']
+
+  payment_service_map:
+    class: Daikon\Money\Service\PaymentServiceMap
+    provisioner: Daikon\Money\Service\PaymentServiceMapProvisioner
+
+  money_service:
+    class: Daikon\Money\Service\MoneyService
+    provisioner: Daikon\Money\Service\MoneyServiceProvisioner
+    settings:
+      type: NGUtech\Bitcoin\ValueObject\Bitcoin
+      currencies:
+        - class: NGUtech\Bitcoin\Service\BitcoinCurrencies
+        - class: NGUtech\Bitcoin\Service\SatoshiCurrencies
+      parsers:
+        - class: NGUtech\Bitcoin\Service\BitcoinMoneyParser
+        - class: NGUtech\Bitcoin\Service\SatoshiMoneyParser
+      formatters:
+        - class: NGUtech\Bitcoin\Service\BitcoinMoneyFormatter
+          currencies: NGUtech\Bitcoin\Service\BitcoinCurrencies
+        - class: NGUtech\Bitcoin\Service\SatoshiMoneyFormatter
+          currencies: NGUtech\Bitcoin\Service\SatoshiCurrencies
+      exchanges:
+        fixed_rate:
+          BTC: { XBT: 1, SAT: 100000000, MSAT: 100000000000 }
+          XBT: { SAT: 100000000, MSAT: 100000000000 }
+          SAT: { MSAT: 1000 }

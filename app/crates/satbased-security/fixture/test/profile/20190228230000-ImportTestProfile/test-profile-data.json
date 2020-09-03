@@ -1,0 +1,164 @@
+[
+  {
+    "@type": "Satbased\\Security\\Profile\\Register\\RegisterProfile",
+    "values": {
+      "profileId": "satbased.security.profile-faadc643-31ed-49ba-8c41-bf1dedab4f37",
+      "role": "admin",
+      "state": "verified",
+      "name": "admin verified",
+      "email": "admin-verified@satbased.com",
+      "passwordHash": "$2y$10$vCNBu37a5a4809QsfMhyF.p8H6Bbe.stoCRKa5SEaNQBgIqi.Io4S",
+      "language": "en",
+      "registeredAt": "2019-02-28T19:00:00.123456+00:00",
+      "authenticationTokenExpiresAt": "2030-01-01T00:00:00.000000+00:00",
+      "verificationTokenExpiresAt": "2022-01-01T00:00:00.000000+00:00"
+    }
+  },
+  {
+    "@type": "Satbased\\Security\\Profile\\Register\\RegisterProfile",
+    "values": {
+      "profileId": "satbased.security.profile-8cf3b691-f02b-4467-9e89-3b148071fecb",
+      "role": "admin",
+      "state": "verified",
+      "name": "admin closed",
+      "email": "admin-closed@satbased.com",
+      "passwordHash": "$2y$10$vCNBu37a5a4809QsfMhyF.p8H6Bbe.stoCRKa5SEaNQBgIqi.Io4S",
+      "language": "en",
+      "registeredAt": "2019-02-28T19:00:00.123456+00:00",
+      "authenticationTokenExpiresAt": "2030-01-01T00:00:00.000000+00:00",
+      "verificationTokenExpiresAt": "2022-01-01T00:00:00.000000+00:00"
+    }
+  },
+  {
+    "@type": "Satbased\\Security\\Profile\\Close\\CloseProfile",
+    "values": {
+      "profileId": "satbased.security.profile-8cf3b691-f02b-4467-9e89-3b148071fecb",
+      "closedAt": "2019-02-28T20:30:00.123456+00:00"
+    }
+  },
+  {
+    "@type": "Satbased\\Security\\Profile\\Register\\RegisterProfile",
+    "values": {
+      "profileId": "satbased.security.profile-f1638d17-98b7-477c-ade8-b277b8799433",
+      "role": "customer",
+      "state": "verified",
+      "name": "staff verified",
+      "email": "staff-verified@satbased.com",
+      "passwordHash": "$2y$10$vCNBu37a5a4809QsfMhyF.p8H6Bbe.stoCRKa5SEaNQBgIqi.Io4S",
+      "language": "en",
+      "registeredAt": "2019-03-02T08:00:00.123456+00:00",
+      "authenticationTokenExpiresAt": "2030-01-01T00:00:00.000000+00:00",
+      "verificationTokenExpiresAt": "2022-01-01T00:00:00.000000+00:00"
+    }
+  },
+  {
+    "@type": "Satbased\\Security\\Profile\\Promote\\PromoteProfile",
+    "values": {
+      "profileId": "satbased.security.profile-f1638d17-98b7-477c-ade8-b277b8799433",
+      "role": "staff"
+    }
+  },
+  {
+    "@type": "Satbased\\Security\\Profile\\Register\\RegisterProfile",
+    "values": {
+      "profileId": "satbased.security.profile-9637c2e9-2401-48d6-b696-47606b97168d",
+      "role": "staff",
+      "state": "verified",
+      "name": "staff closed",
+      "email": "staff-closed@satbased.com",
+      "passwordHash": "$2y$10$vCNBu37a5a4809QsfMhyF.p8H6Bbe.stoCRKa5SEaNQBgIqi.Io4S",
+      "language": "en",
+      "registeredAt": "2019-03-02T08:00:00.123456+00:00",
+      "authenticationTokenExpiresAt": "2030-01-01T00:00:00.000000+00:00",
+      "verificationTokenExpiresAt": "2022-01-01T00:00:00.000000+00:00"
+    }
+  },
+  {
+    "@type": "Satbased\\Security\\Profile\\Close\\CloseProfile",
+    "values": {
+      "profileId": "satbased.security.profile-9637c2e9-2401-48d6-b696-47606b97168d",
+      "closedAt": "2019-03-12T08:00:00.123456+00:00"
+    }
+  },
+  {
+    "@type": "Satbased\\Security\\Profile\\Register\\RegisterProfile",
+    "values": {
+      "profileId": "satbased.security.profile-4ba173e0-4795-4730-a287-74f5bafca632",
+      "role": "customer",
+      "state": "pending",
+      "name": "customer pending",
+      "email": "customer-pending@satbased.com",
+      "passwordHash": "$2y$10$vCNBu37a5a4809QsfMhyF.p8H6Bbe.stoCRKa5SEaNQBgIqi.Io4S",
+      "language": "en",
+      "registeredAt": "2019-03-02T08:00:00.123456+00:00",
+      "authenticationTokenExpiresAt": "2030-01-01T00:00:00.000000+00:00",
+      "verificationTokenExpiresAt": "2022-01-01T00:00:00.000000+00:00"
+    }
+  },
+  {
+    "@type": "Satbased\\Security\\Profile\\Register\\RegisterProfile",
+    "values": {
+      "profileId": "satbased.security.profile-f83ac208-59a7-44e2-bae7-8579a1f00b1f",
+      "role": "customer",
+      "state": "pending",
+      "name": "customer verified",
+      "email": "customer-verified@satbased.com",
+      "passwordHash": "$2y$10$vCNBu37a5a4809QsfMhyF.p8H6Bbe.stoCRKa5SEaNQBgIqi.Io4S",
+      "language": "en",
+      "registeredAt": "2019-03-02T08:00:00.123456+00:00",
+      "authenticationTokenExpiresAt": "2030-01-01T00:00:00.000000+00:00",
+      "verificationTokenExpiresAt": "2022-01-01T00:00:00.000000+00:00"
+    }
+  },
+  {
+    "@type": "Satbased\\Security\\Profile\\Verify\\VerifyProfile",
+    "values": {
+      "profileId": "satbased.security.profile-f83ac208-59a7-44e2-bae7-8579a1f00b1f",
+      "verifiedAt": "2019-03-02T09:00:00.123456+00:00"
+    }
+  },
+  {
+    "@type": "Satbased\\Security\\Profile\\Register\\RegisterProfile",
+    "values": {
+      "profileId": "satbased.security.profile-60e15790-af38-4ec9-b43b-ef6dd54bfee1",
+      "role": "customer",
+      "state": "pending",
+      "name": "customer2 verified",
+      "email": "customer2-verified@satbased.com",
+      "passwordHash": "$2y$10$vCNBu37a5a4809QsfMhyF.p8H6Bbe.stoCRKa5SEaNQBgIqi.Io4S",
+      "language": "en",
+      "registeredAt": "2019-03-02T10:00:00.123456+00:00",
+      "authenticationTokenExpiresAt": "2030-01-01T00:00:00.000000+00:00",
+      "verificationTokenExpiresAt": "2022-01-01T00:00:00.000000+00:00"
+    }
+  },
+  {
+    "@type": "Satbased\\Security\\Profile\\Verify\\VerifyProfile",
+    "values": {
+      "profileId": "satbased.security.profile-60e15790-af38-4ec9-b43b-ef6dd54bfee1",
+      "verifiedAt": "2019-03-02T11:00:00.123456+00:00"
+    }
+  },
+  {
+    "@type": "Satbased\\Security\\Profile\\Register\\RegisterProfile",
+    "values": {
+      "profileId": "satbased.security.profile-6280b20e-6e6d-4d45-9b4b-77a2981613d9",
+      "role": "customer",
+      "state": "verified",
+      "name": "customer closed",
+      "email": "customer-closed@satbased.com",
+      "passwordHash": "$2y$10$vCNBu37a5a4809QsfMhyF.p8H6Bbe.stoCRKa5SEaNQBgIqi.Io4S",
+      "language": "en",
+      "registeredAt": "2019-03-02T08:00:00.123456+00:00",
+      "authenticationTokenExpiresAt": "2030-01-01T00:00:00.000000+00:00",
+      "verificationTokenExpiresAt": "2022-01-01T00:00:00.000000+00:00"
+    }
+  },
+  {
+    "@type": "Satbased\\Security\\Profile\\Close\\CloseProfile",
+    "values": {
+      "profileId": "satbased.security.profile-6280b20e-6e6d-4d45-9b4b-77a2981613d9",
+      "closedAt": "2019-04-02T08:00:00.123456+00:00"
+    }
+  }
+]

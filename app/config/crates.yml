@@ -1,0 +1,37 @@
+#
+# Crate settings
+#
+
+bitcoind.adapter:
+  config_dir: vendor:ngutech/bitcoind-adapter/config
+  migration_dir: vendor:ngutech/bitcoind-adapter/migration
+  connectors:
+    rpc: ${secrets.bitcoin.bitcoind}
+
+lightningd.adapter:
+  config_dir: vendor:ngutech/lightningd-adapter/config
+  migration_dir: vendor:ngutech/lightningd-adapter/migration
+  connectors:
+    rpc: ${secrets.lightning.lightningd}
+
+lnd.adapter:
+  config_dir: vendor:ngutech/lnd-adapter/config
+  migration_dir: vendor:ngutech/lnd-adapter/migration
+  connectors:
+    grpc: ${secrets.lightning.lnd}
+
+satbased.accounting:
+  config_dir: crates:satbased-accounting/config
+  migration_dir: crates:satbased-accounting/migration
+  fixture_dir: crates:satbased-accounting/fixture
+  mount: ''
+
+satbased.security:
+  config_dir: crates:satbased-security/config
+  migration_dir: crates:satbased-security/migration
+  fixture_dir: crates:satbased-security/fixture
+  mount: ''
+  verification:
+    ttl: +1 day
+  authentication:
+    ttl: +1 month

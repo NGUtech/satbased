@@ -1,0 +1,11 @@
+fixture_loaders:
+  satbased.accounting.payment:
+    class: Daikon\Boot\Fixture\FlysystemFixtureLoader
+    connector: satbased.accounting.filesystem
+    settings:
+      location: fixture://payment
+
+fixture_targets:
+  satbased.accounting.payment:
+    enabled: true
+    fixture_loader: satbased.accounting.payment

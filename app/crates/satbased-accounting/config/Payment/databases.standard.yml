@@ -1,0 +1,26 @@
+storage_adapters:
+  satbased.accounting.payment.standard:
+    class: Daikon\Elasticsearch7\Storage\Elasticsearch7StorageAdapter
+    connector: satbased.accounting.projection_store
+    settings:
+      index: ${project.prefix}.satbased-accounting.payment.standard
+
+repositories:
+   satbased.accounting.payment.standard:
+     class: Satbased\Accounting\ReadModel\Standard\PaymentRepository
+     storage_adapter: satbased.accounting.payment.standard
+
+projectors:
+  satbased.accounting.payment.standard:
+    class: Daikon\Boot\ReadModel\StandardProjector
+    repository: satbased.accounting.payment.standard
+    events:
+      - Satbased\Accounting\Payment\Cancel\PaymentCancelled
+      - Satbased\Accounting\Payment\Complete\PaymentCompleted
+      - Satbased\Accounting\Payment\Fail\PaymentFailed
+      - Satbased\Accounting\Payment\Make\PaymentMade
+      - Satbased\Accounting\Payment\Receive\PaymentReceived
+      - Satbased\Accounting\Payment\Request\PaymentRequested
+      - Satbased\Accounting\Payment\Select\PaymentSelected
+      - Satbased\Accounting\Payment\Send\PaymentSent
+      - Satbased\Accounting\Payment\Settle\PaymentSettled

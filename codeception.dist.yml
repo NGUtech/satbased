@@ -1,0 +1,37 @@
+# suite config
+suites:
+  api:satbased-accounting:
+    actor: ApiTester
+    path: app/crates/satbased-accounting/tests/e2e
+    modules:
+      enabled:
+        - Asserts:
+        - \Helper\Daikon:
+        - \Helper\Bitcoin:
+        - \Helper\Api:
+      config:
+        \Helper\Api:
+          depends: PhpBrowser
+
+  api:satbased-security:
+    actor: ApiTester
+    path: app/crates/satbased-security/tests/e2e
+    modules:
+      enabled:
+        - Asserts:
+        - \Helper\Daikon:
+        - \Helper\Api:
+      config:
+        \Helper\Api:
+          depends: PhpBrowser
+
+paths:
+  tests: .
+  output: tests/_output
+  data: tests/_data
+  support: tests/_support
+  envs: tests/_envs
+
+settings:
+  shuffle: false
+  lint: true

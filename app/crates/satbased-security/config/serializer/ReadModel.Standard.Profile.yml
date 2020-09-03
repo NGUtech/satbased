@@ -1,0 +1,28 @@
+Satbased\Security\ReadModel\Standard\Profile:
+  exclusion_policy: ALL
+  discriminator:
+    field_name: '@type'
+    map:
+      Satbased\Security\ReadModel\Standard\Profile: Satbased\Security\ReadModel\Standard\Profile
+  virtual_properties:
+    getProfileId:
+      type: ValueObject
+    getRevision:
+      type: ValueObject
+    getName:
+      type: ValueObject
+    getEmail:
+      type: ValueObject
+    getLanguage:
+      type: ValueObject
+    getRole:
+      type: ValueObject
+    getState:
+      type: ValueObject
+    getRegisteredAt:
+      type: ValueObject
+    getVerifiedAt:
+      type: ValueObject
+    getClosedAt:
+      type: ValueObject
+    getTokens:

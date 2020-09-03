@@ -1,0 +1,21 @@
+Satbased\Accounting\ReadModel\Standard\Account:
+  exclusion_policy: ALL
+  discriminator:
+    field_name: '@type'
+    map:
+      Satbased\Accounting\ReadModel\Standard\Account: Satbased\Accounting\ReadModel\Standard\Account
+  virtual_properties:
+    getAccountId:
+      type: ValueObject
+    getRevision:
+      type: ValueObject
+    getProfileId:
+      type: ValueObject
+    getWallet:
+      type: ValueObject
+    getState:
+      type: ValueObject
+    getOpenedAt:
+      type: ValueObject
+    getFrozenAt:
+      type: ValueObject

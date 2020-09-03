@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+bin/stack bitcoin generate 1
+
+BITCOIN_HEIGHT=$(bin/stack bitcoin getblockchaininfo | jq '.blocks' | tr -d '"')
+if [ $BITCOIN_HEIGHT -gt "1" ]; then exit 0 ; fi
+
+bin/stack bitcoin generate 101
+
+#todo check node sync status instead of sleep
+sleep 60
+
+#generate spam for fee estimation
+bin/exec bitcoin_relay sh -c "node bitcoin-spam.js"
+
+bin/stack alice channelto carol 2000000
+bin/stack alice channelto bob 2000000
+
+BOB_INVOICE=$(bin/stack bob addinvoice 1000000 --memo=bootstrap | jq '.payment_request' | tr -d '"')
+CAROL_INVOICE=$(bin/stack carol invoice 1000000sat bootstrap bootstrap | jq '.bolt11' | tr -d '"')
+
+bin/stack alice updatechanpolicy --base_fee_msat 1000 --fee_rate 0.00001 --time_lock_delta 10
+
+while : ; do
+  STATUS=$(bin/stack alice payinvoice --json -f $BOB_INVOICE | jq '.status' | tr -d '"')
+  if [ $STATUS == 'SUCCEEDED' ]; then
+      break
+  fi
+  sleep 1
+done
+
+while : ; do
+  STATUS=$(bin/stack alice payinvoice --json -f $CAROL_INVOICE | jq '.status' | tr -d '"')
+  if [ $STATUS == 'SUCCEEDED' ]; then
+      break
+  fi
+  sleep 1
+done
