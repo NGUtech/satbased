@@ -1,7 +1,7 @@
 {
     "name": "satbased/satbased",
     "type": "project",
-    "description": "Satbased Infrastructure",
+    "description": "Satbased Bitcoin payments infrastructure.",
     "homepage": "https://github.com/satbased/satbased",
     "license": "MPL-2.0",
     "prefer-stable": true,

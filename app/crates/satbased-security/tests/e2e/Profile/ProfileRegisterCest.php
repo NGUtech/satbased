@@ -42,15 +42,19 @@ class ProfileRegisterCest
             'errors' => [
                 'name' => ['Missing required input.'],
                 'email' => ['Missing required input.'],
-                'password' => ['Missing required input.'],
-                'language' => ['Missing required input.']
+                'password' => ['Missing required input.']
             ]
         ]);
     }
 
     public function registerProfileWithInvalidParams(ApiTester $I): void
     {
-        $I->sendPOST(self::URL_PATTERN, ['name' => 'abc', 'email' => 'abc', 'password' => 'abc', 'language' => 'es']);
+        $I->sendPOST(self::URL_PATTERN, [
+            'name' => 'abc',
+            'email' => 'abc',
+            'password' => 'abc',
+            'language' => 'es'
+        ]);
         $I->seeHttpHeader('Content-Type', 'application/json');
         $I->seeResponseCodeIs(HttpCode::UNPROCESSABLE_ENTITY);
         $I->seeResponseIsJson();
@@ -69,8 +73,7 @@ class ProfileRegisterCest
         $I->sendPOST(self::URL_PATTERN, [
             'name' => 'Test',
             'email' => 'admin-verified@satbased.com',
-            'password' => 'password',
-            'language' => 'en'
+            'password' => 'password'
         ]);
         $I->seeHttpHeader('Content-Type', 'application/json');
         $I->seeResponseCodeIs(HttpCode::CONFLICT);
