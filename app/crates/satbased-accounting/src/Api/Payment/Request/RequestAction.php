@@ -46,6 +46,7 @@ final class RequestAction extends PaymentAction
             ])->critical('references', TextMapValidator::class, [
                 'required' => false,
                 'max' => 300,
+                'size' => 5,
                 'default' => TextMap::makeEmpty()
             ])->critical(JwtAuthenticator::AUTHENTICATOR, AccountValidator::class, [
                 'export' => 'account'

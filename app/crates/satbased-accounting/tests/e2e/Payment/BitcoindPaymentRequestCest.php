@@ -86,34 +86,6 @@ class BitcoindPaymentRequestCest
         $I->seeResponseContainsJson(['errors' => ['accepts' => ['Unknown service.']]]);
     }
 
-    public function requestPaymentAndSelectWithInsufficientBalance(ApiTester $I): void
-    {
-        $this->loginProfile($I, 'customer-verified');
-        $I->sendPOST(self::URL_REQUEST_PATTERN, [
-            'references' => ['someid' => 'someref'],
-            'description' => 'payment description',
-            'amount' => '1000SAT',
-        ]);
-        $I->seeHttpHeader('Content-Type', 'application/json');
-        $I->seeResponseCodeIs(HttpCode::CREATED);
-        $I->seeResponseIsJson();
-
-        $paymentId = current($I->grabDataFromResponseByJsonPath('$.paymentId'));
-        $I->getPayment($paymentId);
-        $I->seeResponseMatchesJsonType(['_source' => $this->PAYMENT_REQUESTED_TYPE]);
-        $I->seeResponseContainsJson(['_source' => [
-            'amount' => '1000000MSAT',
-            'state' => 'requested'
-        ]]);
-
-        $this->loginProfile($I, 'customer2-verified');
-        $I->sendPOST(sprintf(self::URL_SELECT_PATTERN, $paymentId), ['service' => 'testbitcoind']);
-        $I->seeHttpHeader('Content-Type', 'application/json');
-        $I->seeResponseCodeIs(HttpCode::UNPROCESSABLE_ENTITY);
-        $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(['errors' => ['$' => ['Insufficient balance.']]]);
-    }
-
     public function requestPaymentAndSelectUnacceptableService(ApiTester $I): void
     {
         $this->loginProfile($I, 'customer-verified');

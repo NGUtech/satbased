@@ -127,18 +127,16 @@ final class PaymentService
 
         /** @var Payment $payment */
         $payment = $payload['payment'];
+        $amount = $payment->getAmount();
         $now = Timestamp::now();
         Assertion::true($payment->canBeSelected($now), 'Payment cannot be selected.');
-        Assertion::true(
-            $payload['service']->canRequest($payment->getAmount()),
-            'Payment service cannot request given amount.'
-        );
+        Assertion::true($payload['service']->canRequest($amount), 'Payment service cannot request given amount.');
 
         /** @var BitcoinWallet $wallet */
         $wallet = $payload['account']->getWallet();
-        $amount = $payment->getAmount();
         Assertion::false(
-            $wallet->getBalance($amount->getCurrency())->subtract($amount)->isNegative(),
+            $payload['service'] instanceof TransferService
+            && $wallet->getBalance($amount->getCurrency())->subtract($amount)->isNegative(),
             'Insufficient balance.'
         );
 
