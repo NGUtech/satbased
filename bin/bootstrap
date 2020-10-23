@@ -19,7 +19,7 @@ bin/stack alice channelto bob 2000000
 BOB_INVOICE=$(bin/stack bob addinvoice 1000000 --memo=bootstrap | jq '.payment_request' | tr -d '"')
 CAROL_INVOICE=$(bin/stack carol invoice 1000000sat bootstrap bootstrap | jq '.bolt11' | tr -d '"')
 
-bin/stack alice updatechanpolicy --base_fee_msat 1000 --fee_rate 0.00001 --time_lock_delta 10
+bin/stack alice updatechanpolicy --base_fee_msat 1000 --fee_rate 0.00001 --time_lock_delta 18
 
 while : ; do
   STATUS=$(bin/stack alice payinvoice --json -f $BOB_INVOICE | jq '.status' | tr -d '"')

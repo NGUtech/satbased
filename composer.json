@@ -6,6 +6,12 @@
     "license": "MPL-2.0",
     "prefer-stable": true,
     "minimum-stability": "dev",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/MrHash/php-lnd-grpc.git"
+        }
+    ],
     "require": {
         "php": "^7.4",
         "daikon/boot": "master@dev",
@@ -19,7 +25,8 @@
         "ngutech/bitcoind-adapter": "master@dev",
         "ngutech/lightning-interop": "master@dev",
         "ngutech/lightningd-adapter": "master@dev",
-        "ngutech/lnd-adapter": "master@dev"
+        "ngutech/lnd-adapter": "master@dev",
+        "lnpay/php-lnd-grpc": "dev-master as 0.10.4-beta"
     },
     "require-dev": {
         "codeception/codeception": "^4.0",

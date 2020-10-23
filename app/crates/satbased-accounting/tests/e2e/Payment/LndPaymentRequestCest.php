@@ -149,7 +149,7 @@ class LndPaymentRequestCest
         $I->getPayment($paymentId);
         $I->seeResponseContainsJson(['_source' => ['state' => 'received']]);
 
-        $I->runStack('bitcoin', 'generate 8');
+        $I->runStack('bitcoin', 'generate 16');
         $I->runWorker('bitcoind.adapter.messages', 'bitcoind.adapter.message_queue');
         $I->runWorker('lnd.adapter.messages', 'lnd.adapter.message_queue');
 

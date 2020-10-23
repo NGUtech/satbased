@@ -149,6 +149,7 @@ final class PaymentService
                     'preimage' => $this->generatePreimage((string)$payload['secret'] ?: $paymentId),
                     'amount' => (string)$amount,
                     'label' => $paymentId,
+                    'cltvExpiry' => 18,
                     'description' => (string)$payment->getDescription()
                 ]);
                 break;
