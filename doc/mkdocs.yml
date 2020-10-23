@@ -1,0 +1,29 @@
+theme: material
+markdown_extensions:
+  - pymdownx.tabbed
+  - pymdownx.superfences
+site_name: Satbased
+nav:
+  - Home: index.md
+  - Usage: usage.md
+  - Security:
+    - Profile:
+      - Register: Security/Profile/register.md
+      - Verify: Security/Profile/verify.md
+      - Login: Security/Profile/login.md
+      - Logout: Security/Profile/logout.md
+      - Me: Security/Profile/me.md
+      - Resource: Security/Profile/resource.md
+  - Accounting:
+    - Account:
+      - My: Accounting/Account/my.md
+      - Resource: Accounting/Account/resource.md
+    - Payment:
+      - Resource: Accounting/Payment/resource.md
+      - Request: Accounting/Payment/request.md
+      - Make: Accounting/Payment/make.md
+      - Select: Accounting/Payment/select.md
+      - Services: Accounting/Payment/services.md
+      - Settle: Accounting/Payment/settle.md
+      - Cancel: Accounting/Payment/cancel.md
+      - Rescan: Accounting/Payment/rescan.md

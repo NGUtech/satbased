@@ -20,6 +20,14 @@ $ bin/daikon -vv fixture:import
 $ bin/daikon -vv migrate:down
 ```
 
+# Docs
+
+Buildings and serving docs
+```
+$ pip install mkdocs mkdocs-material pymdown-extensions
+$ cd doc && mkdocs serve
+```
+
 ## Endpoints for testing:
 
 - Webserver: http://local.satbased.com
