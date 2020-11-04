@@ -27,6 +27,8 @@ use Satbased\Accounting\Payment\Send\PaymentSent;
 use Satbased\Accounting\Payment\Send\SendPayment;
 use Satbased\Accounting\Payment\Settle\PaymentSettled;
 use Satbased\Accounting\Payment\Settle\SettlePayment;
+use Satbased\Accounting\Payment\Update\PaymentUpdated;
+use Satbased\Accounting\Payment\Update\UpdatePayment;
 use Satbased\Accounting\ValueObject\AccountId;
 use Satbased\Accounting\ValueObject\PaymentDirection;
 use Satbased\Accounting\ValueObject\PaymentState;
@@ -97,6 +99,13 @@ final class Payment extends AggregateRoot
         );
 
         return $this->reflectThat(PaymentSelected::fromCommand($selectPayment));
+    }
+
+    public function update(UpdatePayment $updatePayment): self
+    {
+        Assertion::true($this->canBeUpdated($updatePayment->getUpdatedAt()), 'Payment cannot be updated.');
+
+        return $this->reflectThat(PaymentUpdated::fromCommand($updatePayment));
     }
 
     public function receive(ReceivePayment $receivePayment): self
@@ -204,6 +213,11 @@ final class Payment extends AggregateRoot
     {
         $this->settledAt = $paymentSettled->getSettledAt();
         $this->state = PaymentState::fromNative(PaymentState::SETTLED);
+    }
+
+    protected function whenPaymentUpdated(PaymentUpdated $paymentUpdated): void
+    {
+        $this->references = $this->references->merge($paymentUpdated->getReferences());
     }
 
     protected function whenPaymentCompleted(PaymentCompleted $paymentCompleted): void

@@ -26,6 +26,7 @@ use Satbased\Accounting\Payment\Settle\PaymentSettled;
 use Satbased\Accounting\Payment\Request\PaymentRequested;
 use Satbased\Accounting\Payment\Select\PaymentSelected;
 use Satbased\Accounting\Payment\Send\PaymentSent;
+use Satbased\Accounting\Payment\Update\PaymentUpdated;
 use Satbased\Accounting\ValueObject\AccountId;
 use Satbased\Accounting\ValueObject\PaymentDirection;
 use Satbased\Accounting\ValueObject\PaymentId;
@@ -109,6 +110,13 @@ final class Payment extends Entity implements ProjectionInterface, ProprietaryIn
             ->withValue('transaction', $paymentSelected->getTransaction())
             ->withValue('selectedAt', $paymentSelected->getSelectedAt())
             ->withValue('state', PaymentState::SELECTED);
+    }
+
+    protected function whenPaymentUpdated(PaymentUpdated $paymentUpdated): self
+    {
+        return $this
+            ->adaptRevision($paymentUpdated)
+            ->withValue('references', $this->getReferences()->merge($paymentUpdated->getReferences()));
     }
 
     protected function whenPaymentReceived(PaymentReceived $paymentReceived): self

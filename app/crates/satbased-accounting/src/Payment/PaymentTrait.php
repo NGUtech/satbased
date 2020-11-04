@@ -144,6 +144,12 @@ trait PaymentTrait
             && ($this->getExpiresAt()->isEmpty() || $this->getExpiresAt()->isAfter($time));
     }
 
+    public function canBeUpdated(Timestamp $time): bool
+    {
+        //@todo check expiry
+        return $this->state->isSelected();
+    }
+
     public function canBeReceived(Timestamp $time): bool
     {
         //@todo check expiry

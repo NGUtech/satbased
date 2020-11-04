@@ -24,3 +24,4 @@ projectors:
       - Satbased\Accounting\Payment\Select\PaymentSelected
       - Satbased\Accounting\Payment\Send\PaymentSent
       - Satbased\Accounting\Payment\Settle\PaymentSettled
+      - Satbased\Accounting\Payment\Update\PaymentUpdated

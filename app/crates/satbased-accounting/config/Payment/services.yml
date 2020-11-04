@@ -11,6 +11,7 @@ daikon:
         Satbased\Accounting\Payment\Select\SelectPayment: Satbased\Accounting\CommandHandler\PaymentCommandHandler
         Satbased\Accounting\Payment\Send\SendPayment: Satbased\Accounting\CommandHandler\PaymentCommandHandler
         Satbased\Accounting\Payment\Settle\SettlePayment: Satbased\Accounting\CommandHandler\PaymentCommandHandler
+        Satbased\Accounting\Payment\Update\UpdatePayment: Satbased\Accounting\CommandHandler\PaymentCommandHandler
 
 satbased:
   payment_manager:
