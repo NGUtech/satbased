@@ -68,6 +68,11 @@
         "direction": {
             "type": "keyword"
         },
+        "tokens": {
+            "type": "object",
+            "dynamic": false,
+            "enabled": false
+        },
         "requestedAt": {
             "type": "date",
             "index": false
@@ -93,6 +98,10 @@
             "index": false
         },
         "cancelledAt": {
+            "type": "date",
+            "index": false
+        },
+        "approvedAt": {
             "type": "date",
             "index": false
         },

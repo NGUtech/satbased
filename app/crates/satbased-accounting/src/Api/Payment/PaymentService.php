@@ -12,6 +12,7 @@ use Daikon\Metadata\MetadataInterface;
 use Daikon\Money\Service\PaymentServiceInterface;
 use Daikon\Money\Service\PaymentServiceMap;
 use Daikon\Money\ValueObject\MoneyInterface;
+use Daikon\ValueObject\Sha256;
 use Daikon\ValueObject\Text;
 use Daikon\ValueObject\Timestamp;
 use Daikon\ValueObject\Uuid;
@@ -22,6 +23,7 @@ use NGUtech\Lightning\Entity\LightningInvoice;
 use NGUtech\Lightning\Service\LightningHoldServiceInterface;
 use NGUtech\Lightning\Service\LightningServiceInterface;
 use Satbased\Accounting\Entity\BalanceTransfer;
+use Satbased\Accounting\Payment\Approve\ApprovePayment;
 use Satbased\Accounting\Payment\Cancel\CancelPayment;
 use Satbased\Accounting\Payment\Make\MakePayment;
 use Satbased\Accounting\Payment\Request\RequestPayment;
@@ -96,6 +98,7 @@ final class PaymentService
         $feeEstimate = $payload['transaction']->unwrap()->getFeeEstimate();
         Assertion::true($wallet->hasBalance($amount->add($feeEstimate)), 'Insufficient balance.');
 
+        $now = Timestamp::now();
         $paymentId = PaymentId::PREFIX.'-'.Uuid::generate();
         $makePayment = MakePayment::fromNative([
             'paymentId' => $paymentId,
@@ -106,7 +109,9 @@ final class PaymentService
             'description' => (string)$payload['description'],
             'service' => $this->paymentServiceMap->find($paymentService),
             'transaction' => array_merge($payload['transaction']->toNative(), ['label' => $paymentId]),
-            'requestedAt' => (string)Timestamp::now()
+            'requestedAt' => (string)$now,
+            'approvalToken' => (string)Sha256::generate(),
+            'approvalTokenExpiresAt' => (string)$now->modify('+1 hour')
         ]);
 
         $this->dispatch($makePayment);
@@ -200,6 +205,25 @@ final class PaymentService
         );
 
         return $lightningService->settle($payment->getTransaction()->unwrap());
+    }
+
+    public function approve(Payment $payment, Sha256 $token): ApprovePayment
+    {
+        $now = Timestamp::now();
+
+        Assertion::true($payment->canBeApproved($now), 'Payment cannot be approved.');
+        Assertion::true($payment->getTokens()->getApprovalToken()->approve($token, $now), 'Token is not approved.');
+
+        $approvePayment = ApprovePayment::fromNative([
+            'paymentId' => (string)$payment->getPaymentId(),
+            'revision' => (string)$payment->getRevision(),
+            'approvedAt' => (string)$now,
+            'token' => (string)$token
+        ]);
+
+        $this->dispatch($approvePayment);
+
+        return $approvePayment;
     }
 
     public function cancel(Payment $payment): ?CancelPayment

@@ -97,7 +97,9 @@ final class Profile extends Entity implements
     protected function whenProfileRegistered(ProfileRegistered $profileRegistered): self
     {
         //@todo hard code initial state
-        return $this->withValues($profileRegistered->toNative());
+        $values = $profileRegistered->toNative();
+        unset($values['verificationTokenExpiresAt']);
+        return $this->withValues($values);
     }
 
     protected function whenProfileLoggedIn(ProfileLoggedIn $profileLoggedIn): self

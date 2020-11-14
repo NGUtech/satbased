@@ -17,6 +17,7 @@ use Daikon\Money\Exception\PaymentServiceException;
 use Daikon\Money\Exception\PaymentServiceUnavailable;
 use Daikon\Money\Service\PaymentServiceMap;
 use Daikon\ValueObject\Natural;
+use Daikon\ValueObject\Sha256;
 use Daikon\ValueObject\Timestamp;
 use NGUtech\Bitcoin\Entity\BitcoinBlock;
 use NGUtech\Bitcoin\Entity\BitcoinTransaction;
@@ -33,6 +34,8 @@ use NGUtech\Lnd\Message\LndInvoiceCancelled;
 use NGUtech\Lnd\Message\LndInvoiceSettled;
 use Psr\Log\LoggerInterface;
 use Satbased\Accounting\Entity\BalanceTransfer;
+use Satbased\Accounting\Payment\Approve\ApprovePayment;
+use Satbased\Accounting\Payment\Approve\PaymentApproved;
 use Satbased\Accounting\Payment\Cancel\CancelPayment;
 use Satbased\Accounting\Payment\Complete\CompletePayment;
 use Satbased\Accounting\Payment\Fail\FailPayment;
@@ -129,6 +132,7 @@ final class PaymentManager implements MessageHandlerInterface
                     $this->then(SettlePayment::fromNative([
                         'paymentId' => (string)$payment->getPaymentId(),
                         'revision' => (string)$payment->getRevision(),
+                        'profileId' => (string)$payment->getProfileId(),
                         'accountId' => (string)$payment->getAccountId(),
                         'amount' => (string)$payment->getAmount(), //don't credit overpayment
                         'references' => $payment->getReferences()->toNative(),
@@ -252,6 +256,7 @@ final class PaymentManager implements MessageHandlerInterface
             $this->then(SettlePayment::fromNative([
                 'paymentId' => (string)$payment->getPaymentId(),
                 'revision' => (string)$payment->getRevision(),
+                'profileId' => (string)$payment->getProfileId(),
                 'accountId' => (string)$payment->getAccountId(),
                 'amount' => (string)$invoiceSettled->getAmountPaid(),
                 'references' => $payment->getReferences()->toNative(),
@@ -291,6 +296,7 @@ final class PaymentManager implements MessageHandlerInterface
         if ($transaction instanceof BalanceTransfer) {
             //Pay balance transfer payments immediately
             $payment = $this->loadPayment((string)$paymentSelected->getPaymentId());
+            $selectedAt = $paymentSelected->getSelectedAt();
             $this->then(MakePayment::fromNative([
                 'paymentId' => (string)$transaction->getPaymentId(),
                 'profileId' => (string)$transaction->getProfileId(),
@@ -305,26 +311,42 @@ final class PaymentManager implements MessageHandlerInterface
                     'accountId' => (string)$payment->getAccountId(),
                     'amount' => (string)$transaction->getAmount(),
                 ])->toNative(),
-                'requestedAt' => (string)$paymentSelected->getSelectedAt()
+                'requestedAt' => (string)$selectedAt,
+                'approvalToken' => (string)Sha256::generate(),
+                'approvalTokenExpiresAt' => (string)$selectedAt->modify('+1 hour')
             ]), $metadata);
         }
     }
 
     protected function whenPaymentMade(PaymentMade $paymentMade, MetadataInterface $metadata): void
     {
-        $payment = $this->loadPayment((string)$paymentMade->getPaymentId());
-        if ($payment->canBeSent($paymentMade->getRequestedAt())) {
+        $transaction = $paymentMade->getTransaction()->unwrap();
+        if ($transaction instanceof BalanceTransfer) {
+            $payment = $this->loadPayment((string)$paymentMade->getPaymentId());
+            $this->then(ApprovePayment::fromNative([
+                'paymentId' => (string)$payment->getPaymentId(),
+                'revision' => (string)$payment->getRevision(),
+                'approvedAt' => (string)$paymentMade->getRequestedAt(),
+                'token' => (string)$payment->getTokens()->getApprovalToken()->getToken()
+            ]), $metadata);
+        }
+    }
+
+    protected function whenPaymentApproved(PaymentApproved $paymentApproved, MetadataInterface $metadata): void
+    {
+        $payment = $this->loadPayment((string)$paymentApproved->getPaymentId());
+        if ($payment->canBeSent()) {
             $now = Timestamp::now();
             try {
-                $paymentService = $this->paymentServiceMap->get((string)$paymentMade->getService());
-                $transaction = $paymentService->send($paymentMade->getTransaction()->unwrap());
+                $paymentService = $this->paymentServiceMap->get((string)$payment->getService());
+                $transaction = $paymentService->send($payment->getTransaction()->unwrap());
                 //With lightning payments it is possible for the sending success notification to be
                 //received before the payment AR is updated with the transaction preimage so completion fails.
                 //This is mitigated by using delayed notification lightning message relaying.
                 $this->then(SendPayment::fromNative([
-                    'paymentId' => (string)$paymentMade->getPaymentId(),
-                    'revision' => (string)$paymentMade->getAggregateRevision(),
-                    'accountId' => (string)$paymentMade->getAccountId(),
+                    'paymentId' => (string)$payment->getPaymentId(),
+                    'revision' => (string)$payment->getRevision(),
+                    'accountId' => (string)$payment->getAccountId(),
                     'transaction' => $transaction->toNative(),
                     'references' => $payment->getReferences()->toNative(),
                     'sentAt' => (string)$now
@@ -335,16 +357,16 @@ final class PaymentManager implements MessageHandlerInterface
                 if ($error instanceof PaymentServiceUnavailable && $metadata->has(JobMetadataEnricher::JOB)) {
                     /** @var JobDefinitionInterface $jobDefinition */
                     $jobDefinition = $this->jobDefinitionMap->get($metadata->get(JobMetadataEnricher::JOB));
-                    if ($jobDefinition->getStrategy()->canRetry(Envelope::wrap($paymentMade, $metadata))) {
+                    if ($jobDefinition->getStrategy()->canRetry(Envelope::wrap($paymentApproved, $metadata))) {
                         throw $error;
                     }
                 }
                 $this->then(FailPayment::fromNative([
-                    'paymentId' => (string)$paymentMade->getPaymentId(),
-                    'revision' => (string)$paymentMade->getAggregateRevision(),
-                    'accountId' => (string)$paymentMade->getAccountId(),
-                    'amount' => (string)$paymentMade->getAmount(),
-                    'feeEstimate' => (string)$paymentMade->getFeeEstimate(),
+                    'paymentId' => (string)$payment->getPaymentId(),
+                    'revision' => (string)$payment->getRevision(),
+                    'accountId' => (string)$payment->getAccountId(),
+                    'amount' => (string)$payment->getAmount(),
+                    'feeEstimate' => (string)$payment->getFeeEstimate(),
                     'references' => $payment->getReferences()->toNative(),
                     'failedAt' => (string)$now
                 ]), $metadata);
@@ -368,10 +390,11 @@ final class PaymentManager implements MessageHandlerInterface
             ]), $metadata);
             $receiverPayment = $this->loadPayment((string)$transaction->getPaymentId());
             $this->then(SettlePayment::fromNative([
-                'paymentId' => (string)$transaction->getPaymentId(),
+                'paymentId' => (string)$receiverPayment->getPaymentId(),
                 'revision' => (string)$receiverPayment->getRevision(),
-                'accountId' => (string)$transaction->getAccountId(),
-                'amount' => (string)$transaction->getAmount(),
+                'profileId' => (string)$receiverPayment->getProfileId(),
+                'accountId' => (string)$receiverPayment->getAccountId(),
+                'amount' => (string)$receiverPayment->getAmount(),
                 'references' => $receiverPayment->getReferences()->toNative(),
                 'settledAt' => (string)$paymentSent->getSentAt()
             ]), $metadata);

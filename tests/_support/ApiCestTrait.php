@@ -87,8 +87,10 @@ trait ApiCestTrait
         'requestedAt' => 'string:date',
         'state' => 'string:!empty',
         'direction' => 'string:regex(/outgoing/)',
+        'tokens' => 'array',
         // 'cancelledAt' => 'null|string:date',
         // 'completedAt' => 'null|string:date',
+        // 'approvedAt' => 'null|string:date',
         // 'sentAt' => 'null|string:date',
         // 'failedAt' => 'null|string:date',
     ];

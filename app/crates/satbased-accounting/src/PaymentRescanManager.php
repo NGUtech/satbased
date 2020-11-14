@@ -80,6 +80,7 @@ final class PaymentRescanManager implements MessageHandlerInterface
                     $this->then(SettlePayment::fromNative([
                         'paymentId' => (string)$payment->getPaymentId(),
                         'revision' => (string)$payment->getRevision(),
+                        'profileId' => (string)$payment->getProfileId(),
                         'accountId' => (string)$payment->getAccountId(),
                         'amount' => (string)$payment->getAmount(),
                         'references' => $payment->getReferences()->toNative(),
@@ -95,6 +96,7 @@ final class PaymentRescanManager implements MessageHandlerInterface
                     $this->then(SettlePayment::fromNative([
                         'paymentId' => (string)$payment->getPaymentId(),
                         'revision' => (string)$payment->getRevision(),
+                        'profileId' => (string)$payment->getProfileId(),
                         'accountId' => (string)$payment->getAccountId(),
                         'amount' => (string)$payment->getAmount(), //don't credit overpayment
                         'references' => $payment->getReferences()->toNative(),

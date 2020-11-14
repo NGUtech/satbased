@@ -9,6 +9,9 @@ use Daikon\ValueObject\TextList;
 use Daikon\ValueObject\TextMap;
 use Daikon\ValueObject\Timestamp;
 use NGUtech\Bitcoin\ValueObject\Bitcoin;
+use Satbased\Accounting\Entity\ApprovalToken;
+use Satbased\Accounting\Payment\Approve\ApprovePayment;
+use Satbased\Accounting\Payment\Approve\PaymentApproved;
 use Satbased\Accounting\Payment\Cancel\CancelPayment;
 use Satbased\Accounting\Payment\Cancel\PaymentCancelled;
 use Satbased\Accounting\Payment\Complete\CompletePayment;
@@ -27,11 +30,13 @@ use Satbased\Accounting\Payment\Send\PaymentSent;
 use Satbased\Accounting\Payment\Send\SendPayment;
 use Satbased\Accounting\Payment\Settle\PaymentSettled;
 use Satbased\Accounting\Payment\Settle\SettlePayment;
+use Satbased\Accounting\Payment\Token\ApprovalTokenAdded;
 use Satbased\Accounting\Payment\Update\PaymentUpdated;
 use Satbased\Accounting\Payment\Update\UpdatePayment;
 use Satbased\Accounting\ValueObject\AccountId;
 use Satbased\Accounting\ValueObject\PaymentDirection;
 use Satbased\Accounting\ValueObject\PaymentState;
+use Satbased\Accounting\ValueObject\PaymentTokenList;
 use Satbased\Accounting\ValueObject\Transaction;
 use Satbased\Security\ValueObject\ProfileId;
 
@@ -70,6 +75,8 @@ final class Payment extends AggregateRoot
 
     private Timestamp $cancelledAt;
 
+    private Timestamp $approvedAt;
+
     private Timestamp $sentAt;
 
     private Timestamp $failedAt;
@@ -77,6 +84,8 @@ final class Payment extends AggregateRoot
     private PaymentState $state;
 
     private PaymentDirection $direction;
+
+    private PaymentTokenList $tokens;
 
     public static function request(RequestPayment $requestPayment): self
     {
@@ -87,7 +96,8 @@ final class Payment extends AggregateRoot
     public static function make(MakePayment $makePayment): self
     {
         return (new self($makePayment->getPaymentId()))
-            ->reflectThat(PaymentMade::fromCommand($makePayment));
+            ->reflectThat(PaymentMade::fromCommand($makePayment))
+            ->reflectThat(ApprovalTokenAdded::fromCommand($makePayment));
     }
 
     public function select(SelectPayment $selectPayment): self
@@ -143,9 +153,23 @@ final class Payment extends AggregateRoot
         return $this->reflectThat(PaymentCancelled::fromCommand($cancelPayment));
     }
 
+    public function approve(ApprovePayment $approvePayment): self
+    {
+        Assertion::true($this->canBeApproved($approvePayment->getApprovedAt()), 'Payment cannot be approved.');
+        Assertion::true(
+            $this->getTokens()->getApprovalToken()->approve(
+                $approvePayment->getToken(),
+                $approvePayment->getApprovedAt()
+            ),
+            'Token is not approved.'
+        );
+
+        return $this->reflectThat(PaymentApproved::fromCommand($approvePayment));
+    }
+
     public function send(SendPayment $sendPayment): self
     {
-        Assertion::true($this->canBeSent($sendPayment->getSentAt()), 'Payment cannot be sent.');
+        Assertion::true($this->canBeSent(), 'Payment cannot be sent.');
 
         return $this->reflectThat(PaymentSent::fromCommand($sendPayment));
     }
@@ -174,6 +198,7 @@ final class Payment extends AggregateRoot
         $this->cancelledAt = Timestamp::makeEmpty();
         $this->state = PaymentState::fromNative(PaymentState::REQUESTED);
         $this->direction = PaymentDirection::fromNative(PaymentDirection::INCOMING);
+        $this->tokens = PaymentTokenList::makeEmpty();
     }
 
     protected function whenPaymentMade(PaymentMade $paymentMade): void
@@ -189,10 +214,17 @@ final class Payment extends AggregateRoot
         $this->requestedAt = $paymentMade->getRequestedAt();
         $this->completedAt = Timestamp::makeEmpty();
         $this->cancelledAt = Timestamp::makeEmpty();
+        $this->approvedAt = Timestamp::makeEmpty();
         $this->sentAt = Timestamp::makeEmpty();
         $this->failedAt = Timestamp::makeEmpty();
         $this->state = PaymentState::fromNative(PaymentState::MADE);
         $this->direction = PaymentDirection::fromNative(PaymentDirection::OUTGOING);
+        $this->tokens = PaymentTokenList::makeEmpty();
+    }
+
+    protected function whenApprovalTokenAdded(ApprovalTokenAdded $tokenAdded): void
+    {
+        $this->tokens = $this->tokens->addToken(ApprovalToken::fromNative($tokenAdded->toNative()));
     }
 
     protected function whenPaymentSelected(PaymentSelected $paymentSelected): void
@@ -230,6 +262,12 @@ final class Payment extends AggregateRoot
     {
         $this->cancelledAt = $paymentCancelled->getCancelledAt();
         $this->state = PaymentState::fromNative(PaymentState::CANCELLED);
+    }
+
+    protected function whenPaymentApproved(PaymentApproved $paymentApproved): void
+    {
+        $this->approvedAt = $paymentApproved->getApprovedAt();
+        $this->state = PaymentState::fromNative(PaymentState::APPROVED);
     }
 
     protected function whenPaymentSent(PaymentSent $paymentSent): void

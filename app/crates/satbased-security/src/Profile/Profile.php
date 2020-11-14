@@ -82,7 +82,6 @@ final class Profile extends AggregateRoot
     public function verify(VerifyProfile $verifyProfile): self
     {
         Assertion::true($this->canBeVerified(), 'Profile cannot be verified.');
-
         Assertion::true(
             $this->getTokens()->getVerificationToken()->verify(
                 $verifyProfile->getToken(),

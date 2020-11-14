@@ -2,6 +2,7 @@
 
 namespace Satbased\Accounting\Payment\Make;
 
+use Daikon\ValueObject\Sha256;
 use Daikon\ValueObject\Text;
 use Daikon\ValueObject\TextMap;
 use Daikon\ValueObject\Timestamp;
@@ -20,6 +21,8 @@ use Satbased\Security\ValueObject\ProfileId;
  * @map(service, Daikon\ValueObject\Text)
  * @map(transaction, Satbased\Accounting\ValueObject\Transaction)
  * @map(requestedAt, Daikon\ValueObject\Timestamp)
+ * @map(approvalToken, Daikon\ValueObject\Sha256)
+ * @map(approvalTokenExpiresAt, Daikon\ValueObject\Timestamp)
  */
 trait MakeMessageTrait
 {
@@ -40,6 +43,10 @@ trait MakeMessageTrait
     private Transaction $transaction;
 
     private Timestamp $requestedAt;
+
+    private Sha256 $approvalToken;
+
+    private Timestamp $approvalTokenExpiresAt;
 
     public function getProfileId(): ProfileId
     {
@@ -84,5 +91,15 @@ trait MakeMessageTrait
     public function getRequestedAt(): Timestamp
     {
         return $this->requestedAt;
+    }
+
+    public function getApprovalToken(): Sha256
+    {
+        return $this->approvalToken;
+    }
+
+    public function getApprovalTokenExpiresAt(): Timestamp
+    {
+        return $this->approvalTokenExpiresAt;
     }
 }

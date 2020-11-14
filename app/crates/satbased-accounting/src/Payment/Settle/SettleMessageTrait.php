@@ -7,8 +7,10 @@ use Daikon\ValueObject\Timestamp;
 use NGUtech\Bitcoin\ValueObject\Bitcoin;
 use Satbased\Accounting\Payment\PaymentMessageTrait;
 use Satbased\Accounting\ValueObject\AccountId;
+use Satbased\Security\ValueObject\ProfileId;
 
 /**
+ * @map(profileId, Satbased\Security\ValueObject\ProfileId)
  * @map(accountId, Satbased\Accounting\ValueObject\AccountId)
  * @map(amount, NGUtech\Bitcoin\ValueObject\Bitcoin)
  * @map(references, Daikon\ValueObject\TextMap)
@@ -18,6 +20,8 @@ trait SettleMessageTrait
 {
     use PaymentMessageTrait;
 
+    private ProfileId $profileId;
+
     private AccountId $accountId;
 
     private Bitcoin $amount;
@@ -25,6 +29,11 @@ trait SettleMessageTrait
     private TextMap $references;
 
     private Timestamp $settledAt;
+
+    public function getProfileId(): ProfileId
+    {
+        return $this->profileId;
+    }
 
     public function getAccountId(): AccountId
     {

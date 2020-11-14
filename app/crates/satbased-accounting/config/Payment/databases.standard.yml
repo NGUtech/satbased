@@ -15,6 +15,7 @@ projectors:
     class: Daikon\Boot\ReadModel\StandardProjector
     repository: satbased.accounting.payment.standard
     events:
+      - Satbased\Accounting\Payment\Approve\PaymentApproved
       - Satbased\Accounting\Payment\Cancel\PaymentCancelled
       - Satbased\Accounting\Payment\Complete\PaymentCompleted
       - Satbased\Accounting\Payment\Fail\PaymentFailed

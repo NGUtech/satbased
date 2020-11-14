@@ -4,6 +4,7 @@ namespace Satbased\Accounting\CommandHandler;
 
 use Daikon\EventSourcing\Aggregate\Command\CommandHandler;
 use Daikon\Metadata\MetadataInterface;
+use Satbased\Accounting\Payment\Approve\ApprovePayment;
 use Satbased\Accounting\Payment\Cancel\CancelPayment;
 use Satbased\Accounting\Payment\Complete\CompletePayment;
 use Satbased\Accounting\Payment\Fail\FailPayment;
@@ -60,6 +61,13 @@ final class PaymentCommandHandler extends CommandHandler
         /** @var Payment $payment */
         $payment = $this->checkout($cancelPayment->getPaymentId(), $cancelPayment->getKnownAggregateRevision());
         return [$payment->cancel($cancelPayment), $metadata];
+    }
+
+    protected function handleApprovePayment(ApprovePayment $approvePayment, MetadataInterface $metadata): array
+    {
+        /** @var Payment $payment */
+        $payment = $this->checkout($approvePayment->getPaymentId(), $approvePayment->getKnownAggregateRevision());
+        return [$payment->approve($approvePayment), $metadata];
     }
 
     protected function handleSendPayment(SendPayment $sendPayment, MetadataInterface $metadata): array

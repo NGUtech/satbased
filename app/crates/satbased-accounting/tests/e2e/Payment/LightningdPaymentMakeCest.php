@@ -8,6 +8,7 @@ class LightningdPaymentMakeCest
     use ApiCestTrait;
 
     private const URL_PATTERN = '/payments/make';
+    private const URL_APPROVE_PATTERN = '/payments/%s/approve';
     private const URL_RESCAN_PATTERN = '/payments/%s/rescan';
 
     public function beforeAllTests(ApiTester $I): void
@@ -194,11 +195,17 @@ class LightningdPaymentMakeCest
             'state' => 'made'
         ]]);
 
+        $approvalToken = current($I->grabDataFromResponseByJsonPath('$._source.tokens.0.token'));
         $accountId = current($I->grabDataFromResponseByJsonPath('$._source.accountId'));
         $I->getAccount($accountId);
         $I->seeResponseContainsJson(['_source' => [
             'wallet' => ['MSAT' => '499000000MSAT']
         ]]);
+
+        $I->sendGET(sprintf(self::URL_APPROVE_PATTERN, $paymentId), ['t' => $approvalToken]);
+        $I->seeHttpHeader('Content-Type', 'application/json');
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->seeResponseIsJson();
 
         $I->runWorker('satbased.accounting.messages', 'daikon.message_queue');
         $I->getPayment($paymentId);
@@ -266,11 +273,17 @@ class LightningdPaymentMakeCest
             'state' => 'made'
         ]]);
 
+        $approvalToken = current($I->grabDataFromResponseByJsonPath('$._source.tokens.0.token'));
         $accountId = current($I->grabDataFromResponseByJsonPath('$._source.accountId'));
         $I->getAccount($accountId);
         $I->seeResponseContainsJson(['_source' => [
             'wallet' => ['MSAT' => '999900000MSAT']
         ]]);
+
+        $I->sendGET(sprintf(self::URL_APPROVE_PATTERN, $paymentId), ['t' => $approvalToken]);
+        $I->seeHttpHeader('Content-Type', 'application/json');
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->seeResponseIsJson();
 
         $I->runWorker('satbased.accounting.messages', 'daikon.message_queue');
         $I->getPayment($paymentId);

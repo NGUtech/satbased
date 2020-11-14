@@ -1,19 +1,17 @@
 <?php declare(strict_types=1);
 
-namespace Satbased\Security\ValueObject;
+namespace Satbased\Accounting\ValueObject;
 
 use Daikon\Entity\EntityInterface;
 use Daikon\Entity\EntityList;
 use Daikon\Interop\Assertion;
 use Daikon\ValueObject\Uuid;
-use Satbased\Security\Entity\AuthenticationToken;
-use Satbased\Security\Entity\VerificationToken;
+use Satbased\Accounting\Entity\ApprovalToken;
 
 /**
- * @type(Satbased\Security\Entity\AuthenticationToken)
- * @type(Satbased\Security\Entity\VerificationToken)
+ * @type(Satbased\Accounting\Entity\ApprovalToken)
  */
-final class ProfileTokenList extends EntityList
+final class PaymentTokenList extends EntityList
 {
     /** @return int|bool */
     public function indexOfId(Uuid $tokenId)
@@ -33,27 +31,15 @@ final class ProfileTokenList extends EntityList
         return $this->indexOfId($tokenId) !== false;
     }
 
-    public function hasAuthenticationToken(): bool
+    public function hasApprovalToken(): bool
     {
-        return $this->getByType(AuthenticationToken::class) instanceof AuthenticationToken;
+        return $this->getByType(ApprovalToken::class) instanceof ApprovalToken;
     }
 
-    public function hasVerificationToken(): bool
+    public function getApprovalToken(): ApprovalToken
     {
-        return $this->getByType(VerificationToken::class) instanceof VerificationToken;
-    }
-
-    public function getAuthenticationToken(): AuthenticationToken
-    {
-        $token = $this->getByType(AuthenticationToken::class);
-        Assertion::isInstanceOf($token, AuthenticationToken::class);
-        return $token;
-    }
-
-    public function getVerificationToken(): VerificationToken
-    {
-        $token = $this->getByType(VerificationToken::class);
-        Assertion::isInstanceOf($token, VerificationToken::class);
+        $token = $this->getByType(ApprovalToken::class);
+        Assertion::isInstanceOf($token, ApprovalToken::class);
         return $token;
     }
 

@@ -8,6 +8,7 @@ class BitcoindPaymentMakeCest
     use ApiCestTrait;
 
     private const URL_PATTERN = '/payments/make';
+    private const URL_APPROVE_PATTERN = '/payments/%s/approve';
     private const URL_CANCEL_PATTERN = '/payments/%s/cancel';
     private const URL_RESCAN_PATTERN = '/payments/%s/rescan';
 
@@ -199,12 +200,18 @@ class BitcoindPaymentMakeCest
             'state' => 'made'
         ]]);
 
+        $approvalToken = current($I->grabDataFromResponseByJsonPath('$._source.tokens.0.token'));
         $feeEstimate = current($I->grabDataFromResponseByJsonPath('$._source.transaction.feeEstimate'));
         $accountId = current($I->grabDataFromResponseByJsonPath('$._source.accountId'));
         $I->getAccount($accountId);
         $I->seeResponseContainsJson(['_source' => [
             'wallet' => ['MSAT' => 500000000-5000000-intval($feeEstimate).'MSAT']
         ]]);
+
+        $I->sendGET(sprintf(self::URL_APPROVE_PATTERN, $paymentId), ['t' => $approvalToken]);
+        $I->seeHttpHeader('Content-Type', 'application/json');
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->seeResponseIsJson();
 
         $I->runWorker('satbased.accounting.messages', 'daikon.message_queue');
         $I->getPayment($paymentId);
@@ -283,12 +290,18 @@ class BitcoindPaymentMakeCest
             'state' => 'made'
         ]]);
 
+        $approvalToken = current($I->grabDataFromResponseByJsonPath('$._source.tokens.0.token'));
         $feeEstimate = current($I->grabDataFromResponseByJsonPath('$._source.transaction.feeEstimate'));
         $accountId = current($I->grabDataFromResponseByJsonPath('$._source.accountId'));
         $I->getAccount($accountId);
         $I->seeResponseContainsJson(['_source' => [
             'wallet' => ['MSAT' => 1000000000-5000000-intval($feeEstimate).'MSAT']
         ]]);
+
+        $I->sendGET(sprintf(self::URL_APPROVE_PATTERN, $paymentId), ['t' => $approvalToken]);
+        $I->seeHttpHeader('Content-Type', 'application/json');
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->seeResponseIsJson();
 
         $I->runWorker('satbased.accounting.messages', 'daikon.message_queue');
         $I->getPayment($paymentId);

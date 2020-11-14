@@ -16,6 +16,8 @@ use Daikon\ValueObject\Timestamp;
 use Laminas\Permissions\Acl\ProprietaryInterface;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use NGUtech\Bitcoin\ValueObject\Bitcoin;
+use Satbased\Accounting\Entity\ApprovalToken;
+use Satbased\Accounting\Payment\Approve\PaymentApproved;
 use Satbased\Accounting\Payment\Cancel\PaymentCancelled;
 use Satbased\Accounting\Payment\Complete\PaymentCompleted;
 use Satbased\Accounting\Payment\Fail\PaymentFailed;
@@ -26,11 +28,13 @@ use Satbased\Accounting\Payment\Settle\PaymentSettled;
 use Satbased\Accounting\Payment\Request\PaymentRequested;
 use Satbased\Accounting\Payment\Select\PaymentSelected;
 use Satbased\Accounting\Payment\Send\PaymentSent;
+use Satbased\Accounting\Payment\Token\ApprovalTokenAdded;
 use Satbased\Accounting\Payment\Update\PaymentUpdated;
 use Satbased\Accounting\ValueObject\AccountId;
 use Satbased\Accounting\ValueObject\PaymentDirection;
 use Satbased\Accounting\ValueObject\PaymentId;
 use Satbased\Accounting\ValueObject\PaymentState;
+use Satbased\Accounting\ValueObject\PaymentTokenList;
 use Satbased\Accounting\ValueObject\Transaction;
 use Satbased\Security\ValueObject\ProfileId;
 
@@ -54,6 +58,7 @@ final class Payment extends Entity implements ProjectionInterface, ProprietaryIn
             Attribute::define('transaction', Transaction::class),
             Attribute::define('state', PaymentState::class),
             Attribute::define('direction', PaymentDirection::class),
+            Attribute::define('tokens', PaymentTokenList::class),
             Attribute::define('requestedAt', Timestamp::class),
             Attribute::define('expiresAt', Timestamp::class),
             Attribute::define('selectedAt', Timestamp::class),
@@ -61,6 +66,7 @@ final class Payment extends Entity implements ProjectionInterface, ProprietaryIn
             Attribute::define('settledAt', Timestamp::class),
             Attribute::define('completedAt', Timestamp::class),
             Attribute::define('cancelledAt', Timestamp::class),
+            Attribute::define('approvedAt', Timestamp::class),
             Attribute::define('sentAt', Timestamp::class),
             Attribute::define('failedAt', Timestamp::class),
         ]);
@@ -96,10 +102,22 @@ final class Payment extends Entity implements ProjectionInterface, ProprietaryIn
 
     protected function whenPaymentMade(PaymentMade $paymentMade): self
     {
+        $values = $paymentMade->toNative();
+        unset($values['approvalToken']);
+        unset($values['approvalTokenExpiresAt']);
         return $this
-            ->withValues($paymentMade->toNative())
+            ->withValues($values)
             ->withValue('state', PaymentState::MADE)
             ->withValue('direction', PaymentDirection::OUTGOING);
+    }
+
+    protected function whenApprovalTokenAdded(ApprovalTokenAdded $tokenAdded): self
+    {
+        $token = ApprovalToken::fromNative($tokenAdded->toNative());
+
+        return $this
+            ->adaptRevision($tokenAdded)
+            ->withValue('tokens', $this->getTokens()->addToken($token));
     }
 
     protected function whenPaymentSelected(PaymentSelected $paymentSelected): self
@@ -149,6 +167,14 @@ final class Payment extends Entity implements ProjectionInterface, ProprietaryIn
             ->adaptRevision($paymentCancelled)
             ->withValue('cancelledAt', $paymentCancelled->getCancelledAt())
             ->withValue('state', PaymentState::CANCELLED);
+    }
+
+    protected function whenPaymentApproved(PaymentApproved $paymentApproved): self
+    {
+        return $this
+            ->adaptRevision($paymentApproved)
+            ->withValue('approvedAt', $paymentApproved->getApprovedAt())
+            ->withValue('state', PaymentState::APPROVED);
     }
 
     protected function whenPaymentSent(PaymentSent $paymentSent): self

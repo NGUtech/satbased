@@ -12,6 +12,7 @@ use Satbased\Accounting\ValueObject\AccountId;
 use Satbased\Accounting\ValueObject\PaymentDirection;
 use Satbased\Accounting\ValueObject\PaymentId;
 use Satbased\Accounting\ValueObject\PaymentState;
+use Satbased\Accounting\ValueObject\PaymentTokenList;
 use Satbased\Accounting\ValueObject\Transaction;
 use Satbased\Security\ValueObject\ProfileId;
 
@@ -93,6 +94,11 @@ trait PaymentTrait
         return $this->direction;
     }
 
+    public function getTokens(): PaymentTokenList
+    {
+        return $this->tokens ?? PaymentTokenList::makeEmpty();
+    }
+
     public function getRequestedAt(): Timestamp
     {
         return $this->requestedAt;
@@ -126,6 +132,11 @@ trait PaymentTrait
     public function getCancelledAt(): Timestamp
     {
         return $this->cancelledAt ?? Timestamp::makeEmpty();
+    }
+
+    public function getApprovedAt(): Timestamp
+    {
+        return $this->approvedAt ?? Timestamp::makeEmpty();
     }
 
     public function getSentAt(): Timestamp
@@ -168,10 +179,15 @@ trait PaymentTrait
         return $this->state->isSent();
     }
 
-    public function canBeSent(Timestamp $time): bool
+    public function canBeApproved(Timestamp $time): bool
     {
-        //@todo check expiry
-        return $this->state->isMade();
+        return $this->state->isMade()
+            && ($this->getExpiresAt()->isEmpty() || $this->getExpiresAt()->isAfter($time));
+    }
+
+    public function canBeSent(): bool
+    {
+        return $this->state->isApproved();
     }
 
     public function canBeCancelled(Timestamp $time): bool
@@ -182,7 +198,7 @@ trait PaymentTrait
 
     public function canBeFailed(): bool
     {
-        return $this->state->isMade() || $this->state->isSent();
+        return $this->state->isApproved() || $this->state->isSent();
     }
 
     public function canBeRescanned(): bool

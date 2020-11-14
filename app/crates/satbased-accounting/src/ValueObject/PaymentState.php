@@ -9,6 +9,7 @@ final class PaymentState implements ValueObjectInterface
 {
     public const REQUESTED = 'requested';
     public const MADE = 'made';
+    public const APPROVED = 'approved';
     public const SELECTED = 'selected';
     public const RECEIVED = 'received';
     public const SENT = 'sent';
@@ -20,6 +21,7 @@ final class PaymentState implements ValueObjectInterface
     public const STATES = [
         self::REQUESTED,
         self::MADE,
+        self::APPROVED,
         self::SELECTED,
         self::RECEIVED,
         self::SENT,
@@ -58,6 +60,11 @@ final class PaymentState implements ValueObjectInterface
     public function isMade(): bool
     {
         return $this->state === self::MADE;
+    }
+
+    public function isApproved(): bool
+    {
+        return $this->state === self::APPROVED;
     }
 
     public function isSelected(): bool

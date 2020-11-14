@@ -39,6 +39,9 @@ satbased:
         Satbased\Accounting\Api\Account\Resource\ResourceAction:
           allow:
             - asserts: [['role.state', 'in', ['pending', 'verified']]]
+        Satbased\Accounting\Api\Payment\Approve\ApproveAction:
+          allow:
+            - asserts: [['role.state', '=', 'verified']]
         Satbased\Accounting\Api\Payment\Cancel\CancelAction:
           allow:
             - asserts: [['role.state', '=', 'verified']]
@@ -91,7 +94,7 @@ satbased:
             - roles: customer
               privileges: ['payment.select']
             - roles: customer
-              privileges: ['payment.resource', 'payment.settle', 'payment.cancel', 'payment.rescan']
+              privileges: ['payment.resource', 'payment.approve', 'payment.settle', 'payment.cancel', 'payment.rescan']
               asserts: Laminas\Permissions\Acl\Assertion\OwnershipAssertion
             - roles: staff
         Satbased\Security\ReadModel\Standard\Profile:

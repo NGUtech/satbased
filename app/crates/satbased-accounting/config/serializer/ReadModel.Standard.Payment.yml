@@ -45,5 +45,7 @@ Satbased\Accounting\ReadModel\Standard\Payment:
       type: ValueObject
     getFailedAt:
       type: ValueObject
+    getApprovedAt:
+      type: ValueObject
     getSentAt:
       type: ValueObject

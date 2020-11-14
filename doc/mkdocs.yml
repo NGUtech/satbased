@@ -22,6 +22,7 @@ nav:
       - Resource: Accounting/Payment/resource.md
       - Request: Accounting/Payment/request.md
       - Make: Accounting/Payment/make.md
+      - Approve: Accounting/Payment/approve.md
       - Select: Accounting/Payment/select.md
       - Services: Accounting/Payment/services.md
       - Settle: Accounting/Payment/settle.md

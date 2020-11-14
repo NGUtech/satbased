@@ -2,6 +2,7 @@
 
 use Satbased\Accounting\Api\Account\My\MyAction;
 use Satbased\Accounting\Api\Account\Resource\ResourceAction as AccountResourceAction;
+use Satbased\Accounting\Api\Payment\Approve\ApproveAction;
 use Satbased\Accounting\Api\Payment\Cancel\CancelAction;
 use Satbased\Accounting\Api\Payment\Make\MakeAction;
 use Satbased\Accounting\Api\Payment\Request\RequestAction;
@@ -40,6 +41,9 @@ $map->attach("$cratePrefix.", $mount, function ($map) use ($uuidPattern) {
         ->tokens(['paymentId' => PaymentId::PREFIX."-$uuidPattern"]);
 
     $map->post('payment.cancel', '/payments/{paymentId}/cancel', CancelAction::class)
+        ->tokens(['paymentId' => PaymentId::PREFIX."-$uuidPattern"]);
+
+    $map->get('payment.approve', '/payments/{paymentId}/approve', ApproveAction::class)
         ->tokens(['paymentId' => PaymentId::PREFIX."-$uuidPattern"]);
 
     $map->get('payment.services', '/payments/{paymentId}/services', ServicesAction::class)

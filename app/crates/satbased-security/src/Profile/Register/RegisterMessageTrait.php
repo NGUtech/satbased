@@ -18,6 +18,7 @@ use Satbased\Security\ValueObject\PasswordHash;
  * @map(role, Satbased\Security\ValueObject\ProfileRole)
  * @map(state, Satbased\Security\ValueObject\ProfileState)
  * @map(registeredAt, Daikon\ValueObject\Timestamp)
+ * @map(verificationTokenExpiresAt, Daikon\ValueObject\Timestamp)
  */
 trait RegisterMessageTrait
 {
@@ -36,6 +37,8 @@ trait RegisterMessageTrait
     private ProfileState $state;
 
     private Timestamp $registeredAt;
+
+    private Timestamp $verificationTokenExpiresAt;
 
     public function getName(): Text
     {
@@ -70,5 +73,10 @@ trait RegisterMessageTrait
     public function getRegisteredAt(): Timestamp
     {
         return $this->registeredAt;
+    }
+
+    public function getVerificationTokenExpiresAt(): Timestamp
+    {
+        return $this->verificationTokenExpiresAt;
     }
 }
