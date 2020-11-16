@@ -121,12 +121,12 @@ final class PaymentManager implements MessageHandlerInterface
                 //@todo timeout normal expectations for incomplete txs
             ]),
             function (Payment $payment) use ($block, $metadata) {
-                /** @var BitcoinTransaction $paymentTransaction */
-                $paymentTransaction = $payment->getTransaction()->unwrap();
-                $address = $paymentTransaction->getOutputs()->first()->getAddress(); //Assume one address to check
+                /** @var BitcoinTransaction $bitcoinTransaction */
+                $bitcoinTransaction = $payment->getTransaction()->unwrap();
+                $address = $bitcoinTransaction->getOutputs()->first()->getAddress(); //Assume one address to check
                 $confirmedBalance = $this->bitcoindService->getConfirmedBalance(
                     $address,
-                    $paymentTransaction->getConfTarget()
+                    $bitcoinTransaction->getConfTarget()
                 );
                 if ($confirmedBalance->isGreaterThanOrEqual($payment->getAmount())) {
                     $this->then(SettlePayment::fromNative([
@@ -134,7 +134,7 @@ final class PaymentManager implements MessageHandlerInterface
                         'revision' => (string)$payment->getRevision(),
                         'profileId' => (string)$payment->getProfileId(),
                         'accountId' => (string)$payment->getAccountId(),
-                        'amount' => (string)$payment->getAmount(), //don't credit overpayment
+                        'amount' => (string)$confirmedBalance,
                         'references' => $payment->getReferences()->toNative(),
                         'settledAt' => (string)$block->getTimestamp()
                     ]), $metadata);
@@ -151,11 +151,11 @@ final class PaymentManager implements MessageHandlerInterface
                 'transaction.@type' => BitcoinTransaction::class
             ]),
             function (Payment $payment) use ($block, $metadata) {
-                /** @var BitcoinTransaction $paymentTransaction */
-                $paymentTransaction = $payment->getTransaction()->unwrap();
-                $transaction = $this->bitcoindService->getTransaction($paymentTransaction->getId());
+                /** @var BitcoinTransaction $bitcoinTransaction */
+                $bitcoinTransaction = $payment->getTransaction()->unwrap();
+                $transaction = $this->bitcoindService->getTransaction($bitcoinTransaction->getId());
                 if ($transaction
-                    && $transaction->getConfirmations()->isGreaterThanOrEqualTo($paymentTransaction->getConfTarget())
+                    && $transaction->getConfirmations()->isGreaterThanOrEqualTo($bitcoinTransaction->getConfTarget())
                     && $transaction->getAmount()->isGreaterThanOrEqual($payment->getAmount())
                 ) {
                     $this->then(CompletePayment::fromNative([

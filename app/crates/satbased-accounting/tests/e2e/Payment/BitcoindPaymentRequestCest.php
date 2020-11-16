@@ -224,4 +224,59 @@ class BitcoindPaymentRequestCest
             'wallet' => ['MSAT' => '501000000MSAT']
         ]]);
     }
+
+    /**
+     * @depends requestPaymentAndSettle
+     */
+    public function requestPaymentAndOverpay(ApiTester $I): void
+    {
+        $this->loginProfile($I, 'customer-verified');
+        $I->sendPOST(self::URL_REQUEST_PATTERN, [
+            'references' => ['someid' => 'someref'],
+            'description' => 'payment description',
+            'amount' => '5000000MSAT',
+        ]);
+        $I->seeHttpHeader('Content-Type', 'application/json');
+        $I->seeResponseCodeIs(HttpCode::CREATED);
+        $I->seeResponseIsJson();
+
+        $paymentId = current($I->grabDataFromResponseByJsonPath('$.paymentId'));
+        $I->getPayment($paymentId);
+        $I->seeResponseMatchesJsonType(['_source' => $this->PAYMENT_REQUESTED_TYPE]);
+        $I->seeResponseContainsJson(['_source' => [
+            'amount' => '5000000MSAT',
+            'state' => 'requested'
+        ]]);
+
+        $this->loginProfile($I, 'customer-verified');
+        $I->sendPOST(sprintf(self::URL_SELECT_PATTERN, $paymentId), ['service' => 'testbitcoind']);
+        $I->seeHttpHeader('Content-Type', 'application/json');
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->seeResponseIsJson();
+        $I->getPayment($paymentId);
+        $I->seeResponseContainsJson(['_source' => [
+            'transaction' => [
+                'amount' => '5000000MSAT',
+                'outputs' => [['value' => '5000000MSAT']],
+                'label' => $paymentId,
+                'comment' => 'payment description',
+            ],
+            'state' => 'selected'
+        ]]);
+
+        $paymentAddress = current($I->grabDataFromResponseByJsonPath('$._source.transaction.outputs.0.address'));
+        $I->runStack('bitcoin', "sendtoaddress $paymentAddress 0.00006");
+        $I->runStack('bitcoin', 'generate 3');
+        $I->runWorker('bitcoind.adapter.messages', 'bitcoind.adapter.message_queue');
+        $I->getPayment($paymentId);
+        $I->seeResponseContainsJson(['_source' => ['state' => 'settled']]);
+
+        $accountId = current($I->grabDataFromResponseByJsonPath('$._source.accountId'));
+        $I->getAccount($accountId);
+        $I->seeResponseContainsJson(['_source' => [
+            'wallet' => ['MSAT' => '507000000MSAT']
+        ]]);
+
+        //check payment/transaction amounts
+    }
 }

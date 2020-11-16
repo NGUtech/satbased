@@ -129,6 +129,10 @@ final class Payment extends AggregateRoot
             $this->canBeSettled($settlePayment->getSettledAt()),
             'Payment cannot be settled.'
         );
+        Assertion::true(
+            $settlePayment->getAmount()->isGreaterThanOrEqual($this->amount),
+            'Payment settled amount is less than expected.'
+        );
 
         return $this->reflectThat(PaymentSettled::fromCommand($settlePayment));
     }

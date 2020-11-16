@@ -82,7 +82,7 @@ final class PaymentRescanManager implements MessageHandlerInterface
                         'revision' => (string)$payment->getRevision(),
                         'profileId' => (string)$payment->getProfileId(),
                         'accountId' => (string)$payment->getAccountId(),
-                        'amount' => (string)$payment->getAmount(),
+                        'amount' => (string)$lightningPayment->getAmount(),
                         'references' => $payment->getReferences()->toNative(),
                         'settledAt' => (string)$now
                     ]), $metadata);
@@ -98,7 +98,7 @@ final class PaymentRescanManager implements MessageHandlerInterface
                         'revision' => (string)$payment->getRevision(),
                         'profileId' => (string)$payment->getProfileId(),
                         'accountId' => (string)$payment->getAccountId(),
-                        'amount' => (string)$payment->getAmount(), //don't credit overpayment
+                        'amount' => (string)$confirmedBalance,
                         'references' => $payment->getReferences()->toNative(),
                         'settledAt' => (string)$now
                     ]), $metadata);
