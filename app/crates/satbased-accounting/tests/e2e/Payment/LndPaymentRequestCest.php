@@ -215,6 +215,9 @@ class LndPaymentRequestCest
         $I->seeResponseContainsJson(['_source' => [
             'wallet' => ['MSAT' => '110000MSAT']
         ]]);
+
+        $I->getPayment($paymentId);
+        $I->seeResponseContainsJson(['_source' => ['amountPaid' => '110000MSAT']]);
     }
 
     public function requestPaymentAndSettle(ApiTester $I): void
@@ -256,6 +259,9 @@ class LndPaymentRequestCest
         $I->seeResponseContainsJson(['_source' => [
             'wallet' => ['MSAT' => '500100001MSAT']
         ]]);
+
+        $I->getPayment($paymentId);
+        $I->seeResponseContainsJson(['_source' => ['amountPaid' => '100001MSAT']]);
     }
 
     public function requestHoldPaymentAndSettle(ApiTester $I): void
@@ -311,5 +317,8 @@ class LndPaymentRequestCest
         $I->seeResponseContainsJson(['_source' => [
             'wallet' => ['MSAT' => '1000101001MSAT']
         ]]);
+
+        $I->getPayment($paymentId);
+        $I->seeResponseContainsJson(['_source' => ['amountPaid' => '101001MSAT']]);
     }
 }

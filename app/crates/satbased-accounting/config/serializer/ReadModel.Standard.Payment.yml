@@ -19,6 +19,8 @@ Satbased\Accounting\ReadModel\Standard\Payment:
       type: ValueObject
     getAmount:
       type: ValueObject
+    getAmountPaid:
+      type: ValueObject
     getDescription:
       type: ValueObject
     getService:

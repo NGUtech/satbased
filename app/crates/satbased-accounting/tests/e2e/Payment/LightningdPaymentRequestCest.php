@@ -124,6 +124,9 @@ class LightningdPaymentRequestCest
         $I->seeResponseContainsJson(['_source' => [
             'wallet' => ['MSAT' => '110000MSAT']
         ]]);
+
+        $I->getPayment($paymentId);
+        $I->seeResponseContainsJson(['_source' => ['amountPaid' => '110000MSAT']]);
     }
 
     public function requestPaymentAndSettle(ApiTester $I): void
@@ -172,5 +175,8 @@ class LightningdPaymentRequestCest
         $I->seeResponseContainsJson(['_source' => [
             'wallet' => ['MSAT' => '500100000MSAT']
         ]]);
+
+        $I->getPayment($paymentId);
+        $I->seeResponseContainsJson(['_source' => ['amountPaid' => '100000MSAT']]);
     }
 }

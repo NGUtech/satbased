@@ -227,6 +227,7 @@ class LightningdPaymentMakeCest
         $I->getPayment($paymentId);
         $I->seeResponseContainsJson(['_source' => [
             'amount' => '1000000MSAT',
+            'amountPaid' => '1000000MSAT',
             'state' => 'completed'
         ]]);
 
@@ -301,6 +302,7 @@ class LightningdPaymentMakeCest
         $I->getPayment($paymentId);
         $I->seeResponseContainsJson(['_source' => [
             'amount' => '100000MSAT',
+            'amountPaid' => '100000MSAT',
             'state' => 'completed'
         ]]);
 

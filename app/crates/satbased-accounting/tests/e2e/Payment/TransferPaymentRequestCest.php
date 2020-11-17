@@ -196,11 +196,13 @@ class TransferPaymentRequestCest
         $I->getPayment($paymentId);
         $I->seeResponseContainsJson(['_source' => [
             'amount' => '105000MSAT',
+            'amountPaid' => '105000MSAT',
             'state' => 'settled'
         ]]);
         $I->getPayment($newPaymentId);
         $I->seeResponseContainsJson(['_source' => [
             'amount' => '105000MSAT',
+            'amountPaid' => '105000MSAT',
             'state' => 'completed'
         ]]);
 

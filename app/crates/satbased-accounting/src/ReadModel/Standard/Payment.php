@@ -53,6 +53,7 @@ final class Payment extends Entity implements ProjectionInterface, ProprietaryIn
             Attribute::define('references', TextMap::class),
             Attribute::define('accepts', TextList::class),
             Attribute::define('amount', Bitcoin::class),
+            Attribute::define('amountPaid', Bitcoin::class),
             Attribute::define('description', Text::class),
             Attribute::define('service', Text::class),
             Attribute::define('transaction', Transaction::class),
@@ -149,6 +150,7 @@ final class Payment extends Entity implements ProjectionInterface, ProprietaryIn
     {
         return $this
             ->adaptRevision($paymentSettled)
+            ->withValue('amountPaid', $paymentSettled->getAmount())
             ->withValue('settledAt', $paymentSettled->getSettledAt())
             ->withValue('state', PaymentState::SETTLED);
     }
@@ -157,6 +159,7 @@ final class Payment extends Entity implements ProjectionInterface, ProprietaryIn
     {
         return $this
             ->adaptRevision($paymentCompleted)
+            ->withValue('amountPaid', $paymentCompleted->getAmount())
             ->withValue('completedAt', $paymentCompleted->getCompletedAt())
             ->withValue('state', PaymentState::COMPLETED);
     }
@@ -165,6 +168,7 @@ final class Payment extends Entity implements ProjectionInterface, ProprietaryIn
     {
         return $this
             ->adaptRevision($paymentCancelled)
+            ->withValue('amountPaid', Bitcoin::makeEmpty())
             ->withValue('cancelledAt', $paymentCancelled->getCancelledAt())
             ->withValue('state', PaymentState::CANCELLED);
     }
@@ -190,6 +194,7 @@ final class Payment extends Entity implements ProjectionInterface, ProprietaryIn
     {
         return $this
             ->adaptRevision($paymentFailed)
+            ->withValue('amountPaid', Bitcoin::makeEmpty())
             ->withValue('failedAt', $paymentFailed->getFailedAt())
             ->withValue('state', PaymentState::FAILED);
     }

@@ -245,6 +245,7 @@ class BitcoindPaymentMakeCest
         $I->getPayment($paymentId);
         $I->seeResponseContainsJson(['_source' => [
             'amount' => '5000000MSAT',
+            'amountPaid' => '5000000MSAT',
             'state' => 'completed'
         ]]);
 
@@ -329,6 +330,7 @@ class BitcoindPaymentMakeCest
         $I->getPayment($paymentId);
         $I->seeResponseContainsJson(['_source' => [
             'amount' => '5000000MSAT',
+            'amountPaid' => '5000000MSAT',
             'state' => 'completed'
         ]]);
 

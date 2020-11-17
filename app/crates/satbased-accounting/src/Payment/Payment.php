@@ -54,6 +54,8 @@ final class Payment extends AggregateRoot
 
     private Bitcoin $amount;
 
+    private Bitcoin $amountPaid;
+
     private Text $description;
 
     private Text $service;
@@ -191,6 +193,7 @@ final class Payment extends AggregateRoot
         $this->references = $paymentRequested->getReferences();
         $this->accepts = $paymentRequested->getAccepts();
         $this->amount = $paymentRequested->getAmount();
+        $this->amountPaid = Bitcoin::makeEmpty();
         $this->description = $paymentRequested->getDescription();
         $this->service = Text::makeEmpty();
         $this->transaction = null;
@@ -211,6 +214,7 @@ final class Payment extends AggregateRoot
         $this->references = $paymentMade->getReferences();
         $this->accepts = null;
         $this->amount = $paymentMade->getAmount();
+        $this->amountPaid = Bitcoin::makeEmpty();
         $this->description = $paymentMade->getDescription();
         $this->service = $paymentMade->getService();
         $this->transaction = $paymentMade->getTransaction();
@@ -247,6 +251,7 @@ final class Payment extends AggregateRoot
 
     protected function whenPaymentSettled(PaymentSettled $paymentSettled): void
     {
+        $this->amountPaid = $paymentSettled->getAmount();
         $this->settledAt = $paymentSettled->getSettledAt();
         $this->state = PaymentState::fromNative(PaymentState::SETTLED);
     }
@@ -258,12 +263,14 @@ final class Payment extends AggregateRoot
 
     protected function whenPaymentCompleted(PaymentCompleted $paymentCompleted): void
     {
+        $this->amountPaid = $paymentCompleted->getAmount();
         $this->completedAt = $paymentCompleted->getCompletedAt();
         $this->state = PaymentState::fromNative(PaymentState::COMPLETED);
     }
 
     protected function whenPaymentCancelled(PaymentCancelled $paymentCancelled): void
     {
+        $this->amountPaid = Bitcoin::makeEmpty();
         $this->cancelledAt = $paymentCancelled->getCancelledAt();
         $this->state = PaymentState::fromNative(PaymentState::CANCELLED);
     }
@@ -283,6 +290,7 @@ final class Payment extends AggregateRoot
 
     protected function whenPaymentFailed(PaymentFailed $paymentFailed): void
     {
+        $this->amountPaid = Bitcoin::makeEmpty();
         $this->failedAt = $paymentFailed->getFailedAt();
         $this->state = PaymentState::fromNative(PaymentState::FAILED);
     }

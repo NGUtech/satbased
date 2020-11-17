@@ -163,6 +163,7 @@ class LndPaymentMakeCest
         $I->getPayment($paymentId);
         $I->seeResponseContainsJson(['_source' => [
             'amount' => '1000000MSAT',
+            'amountPaid' => '1000000MSAT',
             'state' => 'completed'
         ]]);
 

@@ -53,6 +53,11 @@ trait PaymentTrait
         return $this->amount;
     }
 
+    public function getAmountPaid(): Bitcoin
+    {
+        return $this->amountPaid ?? Bitcoin::makeEmpty();
+    }
+
     public function getDescription(): Text
     {
         return $this->description ?? Text::makeEmpty();

@@ -3660,12 +3660,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/NGUtech/lightning-interop.git",
-                "reference": "0df9ee5876ba5203dafa540345c55fbb15a77c3c"
+                "reference": "efdd9cc7b9cd7bafd0384a3c051015d70b37fa5c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/NGUtech/lightning-interop/zipball/0df9ee5876ba5203dafa540345c55fbb15a77c3c",
-                "reference": "0df9ee5876ba5203dafa540345c55fbb15a77c3c",
+                "url": "https://api.github.com/repos/NGUtech/lightning-interop/zipball/efdd9cc7b9cd7bafd0384a3c051015d70b37fa5c",
+                "reference": "efdd9cc7b9cd7bafd0384a3c051015d70b37fa5c",
                 "shasum": ""
             },
             "require": {
@@ -3701,7 +3701,7 @@
                 "interop",
                 "invoice"
             ],
-            "time": "2020-11-04T11:22:47+00:00"
+            "time": "2020-11-17T11:55:32+00:00"
         },
         {
             "name": "ngutech/lightningd-adapter",
@@ -3709,12 +3709,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/NGUtech/lightningd-adapter.git",
-                "reference": "fb7d01a75cd24fcab187be1719061756b032f147"
+                "reference": "61d76b5d40ddd38ef4119e069d5eb8f0b80971b1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/NGUtech/lightningd-adapter/zipball/fb7d01a75cd24fcab187be1719061756b032f147",
-                "reference": "fb7d01a75cd24fcab187be1719061756b032f147",
+                "url": "https://api.github.com/repos/NGUtech/lightningd-adapter/zipball/61d76b5d40ddd38ef4119e069d5eb8f0b80971b1",
+                "reference": "61d76b5d40ddd38ef4119e069d5eb8f0b80971b1",
                 "shasum": ""
             },
             "require": {
@@ -3758,7 +3758,7 @@
                 "lightning-network",
                 "lightningd"
             ],
-            "time": "2020-11-04T12:10:37+00:00"
+            "time": "2020-11-17T12:01:01+00:00"
         },
         {
             "name": "ngutech/lnd-adapter",
@@ -3766,12 +3766,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/NGUtech/lnd-adapter.git",
-                "reference": "8e87b6e8a173a48e2610345e792133108e1a2ee1"
+                "reference": "d2514895ac1f060948d7576e1fcc47f612191110"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/NGUtech/lnd-adapter/zipball/8e87b6e8a173a48e2610345e792133108e1a2ee1",
-                "reference": "8e87b6e8a173a48e2610345e792133108e1a2ee1",
+                "url": "https://api.github.com/repos/NGUtech/lnd-adapter/zipball/d2514895ac1f060948d7576e1fcc47f612191110",
+                "reference": "d2514895ac1f060948d7576e1fcc47f612191110",
                 "shasum": ""
             },
             "require": {
@@ -3817,7 +3817,7 @@
                 "lightning-network",
                 "lnd"
             ],
-            "time": "2020-11-04T12:08:36+00:00"
+            "time": "2020-11-17T12:04:13+00:00"
         },
         {
             "name": "php-amqplib/php-amqplib",
@@ -7589,16 +7589,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "0.12.55",
+            "version": "0.12.56",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "4382b2b2059ec7e5135d07685ec1e3e16ae32d16"
+                "reference": "007fd5d700c41e1bb27795fae15a2383f8fa4ba1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/4382b2b2059ec7e5135d07685ec1e3e16ae32d16",
-                "reference": "4382b2b2059ec7e5135d07685ec1e3e16ae32d16",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/007fd5d700c41e1bb27795fae15a2383f8fa4ba1",
+                "reference": "007fd5d700c41e1bb27795fae15a2383f8fa4ba1",
                 "shasum": ""
             },
             "require": {
@@ -7641,7 +7641,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-11-14T10:20:35+00:00"
+            "time": "2020-11-16T22:59:18+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",

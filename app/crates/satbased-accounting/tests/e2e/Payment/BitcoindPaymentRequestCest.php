@@ -277,6 +277,7 @@ class BitcoindPaymentRequestCest
             'wallet' => ['MSAT' => '507000000MSAT']
         ]]);
 
-        //check payment/transaction amounts
+        $I->getPayment($paymentId);
+        $I->seeResponseContainsJson(['_source' => ['amountPaid' => '6000000MSAT']]);
     }
 }
