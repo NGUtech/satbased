@@ -106,7 +106,7 @@ final class Api extends REST
             $this->config['elasticsearch']['username'],
             $this->config['elasticsearch']['password']
         );
-        $this->sendGET($this->config['url'].":9200/$index/_doc/$identifier");
+        $this->sendGET($this->config['elasticsearch']['url']."/$index/_doc/$identifier");
     }
 
     private function searchDocuments(string $index, array $query = []): void
@@ -115,6 +115,6 @@ final class Api extends REST
             $this->config['elasticsearch']['username'],
             $this->config['elasticsearch']['password']
         );
-        $this->sendGET($this->config['url'].":9200/$index/_search", array_merge(['size' => 50], $query));
+        $this->sendGET($this->config['elasticsearch']['url']."/$index/_search", array_merge(['size' => 50], $query));
     }
 }
