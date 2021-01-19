@@ -1,9 +1,12 @@
 modules:
   config:
     \Helper\Api:
-      url: http://local.satbased.com
-      email: satbased.com
+      url: '%APP_SCHEME%://%APP_HOST%'
+      elasticsearch:
+        url: '%APP_SCHEME%://%APP_HOST%:9200'
+        username: elastic
+        password: '%ELASTIC_PASSWORD%'
       cookies:
-        domain: .local.satbased.com
+        domain: '.%APP_HOST%'
         jwt: dev-_jwt
         xsrf: dev-_xsrf

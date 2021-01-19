@@ -92,7 +92,7 @@ class ProfileVerifyCest
         $I->seeResponseContainsJson(['errors' => ['$' => ['Profile cannot be verified.']]]);
     }
 
-    public function verifyPendingcustomer(ApiTester $I): void
+    public function verifyPendingCustomer(ApiTester $I): void
     {
         $I->getProfile($this->PROFILE_IDS['customer-pending']);
         $token = current($I->grabDataFromResponseByJsonPath('$._source.tokens[1].token'));

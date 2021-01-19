@@ -1,5 +1,7 @@
 # Satbased
 
+Bitcoin based payments framework for scalable web applications.
+
 ## API Documentation
 
 Read the [usage](usage.md) for API interaction instructions, and select from the menu for furth explainations about each available endpoint.

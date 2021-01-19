@@ -1,5 +1,5 @@
 # Satbased
-Satbased Infrastructure
+Bitcoin based payments framework for scalable web applications.
 
 ```
 $ composer --ignore-platform-reqs install

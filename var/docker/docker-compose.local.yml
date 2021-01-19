@@ -27,8 +27,9 @@ services:
       - http.cors.enabled=true
       - http.cors.allow-origin=*
       - http.cors.allow-headers=Authorization
+      - xpack.security.enabled=true
       - xpack.watcher.enabled=false
-      - xpack.monitoring.enabled=false
+      - ELASTIC_PASSWORD
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
 
   kibana:
@@ -37,4 +38,6 @@ services:
     ports:
       - "5601:5601"
     environment:
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD}
       - ELASTICSEARCH_URL=http://elasticsearch:9200

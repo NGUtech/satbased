@@ -4,7 +4,7 @@
 
 name: Satbased
 version: ${app.version}
-description: 'Satbased Infrastructure'
+description: 'Bitcoin based payments framework for scalable web applications.'
 prefix: daikon
 negotiation:
   languages:

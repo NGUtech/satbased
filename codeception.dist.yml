@@ -25,6 +25,9 @@ suites:
         \Helper\Api:
           depends: PhpBrowser
 
+params:
+  - .env
+
 paths:
   tests: .
   output: tests/_output
