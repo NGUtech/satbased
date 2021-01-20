@@ -14,7 +14,6 @@
     ],
     "require": {
         "php": "^7.4",
-        "beberlei/assert": "3.2.6",
         "daikon/boot": "master@dev",
         "daikon/money-interop": "master@dev",
         "daikon/security-interop": "master@dev",
@@ -22,7 +21,6 @@
         "doctrine/cache": "^1.8",
         "laminas/laminas-diactoros": "^2.0",
         "laminas/laminas-httphandlerrunner": "^1.0",
-        "laminas/laminas-permissions-acl": "2.7.1",
         "ngutech/bitcoin-interop": "master@dev",
         "ngutech/bitcoind-adapter": "master@dev",
         "ngutech/lightning-interop": "master@dev",
