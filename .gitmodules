@@ -1,0 +1,3 @@
+[submodule "var/docker/lightningd/plugins/amqp-relay"]
+	path = var/docker/lightningd/plugins/amqp-relay
+	url = https://github.com/NGUtech/amqp-relay
