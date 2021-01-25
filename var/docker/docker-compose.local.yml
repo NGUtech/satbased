@@ -5,6 +5,13 @@ volumes:
   elasticsearch_data:
 
 services:
+  proxy:
+    environment:
+      NGINX_REDIRECT_PORT80: "true"
+      SERVER1HTTPS_ENABLED: "true"
+      SERVER1HTTP_ENABLED: "false"
+      SERVER1CERTIFICATE_DNAME: "/CN=NGUtech/OU=Satbased/O=${APP_DOMAIN}/L=LOCAL/C=XY"
+
   nginx:
     volumes:
       - ../..:/var/www

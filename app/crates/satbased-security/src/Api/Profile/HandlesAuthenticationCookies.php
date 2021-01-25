@@ -14,7 +14,7 @@ trait HandlesAuthenticationCookies
     private function setAuthenticationCookies(ResponseInterface $response): ResponseInterface
     {
         $cookiesConfig = $this->config->get('project.authentication.cookies', []);
-        $cookieDomain = $cookiesConfig['domain'] ?? '.'.$this->config->get('app.host');
+        $cookieDomain = $cookiesConfig['domain'] ?? '.'.$this->config->get('app.domain');
         $jwtAttribute = $cookiesConfig['jwt']['attribute'] ?? JwtDecoder::DEFAULT_ATTR_JWT;
         $xsrfAttribute = $cookiesConfig['xsrf']['attribute'] ?? JwtDecoder::DEFAULT_ATTR_XSRF;
         $jwtPayload = explode('.', $this->jwt)[1];

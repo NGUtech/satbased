@@ -11,9 +11,9 @@ negotiation:
 
 cors:
   enabled: true
-  scheme: http #${app.scheme}
-  host: nginx #${app.host}
-  port: 8000 #${app.port}
+  scheme: http
+  host: nginx
+  port: 8000
   request:
     allowed_origins: ['http://nginx:8000']
     allowed_headers: ['accept', 'authorization', 'origin', 'content-type', 'x-xsrf-token']

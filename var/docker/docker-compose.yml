@@ -57,6 +57,8 @@ services:
       - APP_DEBUG
       - APP_SCHEME
       - APP_HOST
+      - APP_PORT
+      - APP_DOMAIN
       - APP_SECRETS_DIR
       - PHP_INI_SCAN_DIR=var/docker/php/conf/conf.d
 

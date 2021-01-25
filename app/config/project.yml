@@ -12,7 +12,7 @@ negotiation:
 authentication:
   default_role: Daikon\Security\Authentication\Unauthenticated
   cookies:
-    domain: .${app.host}
+    domain: .${app.domain}
     xsrf:
       attribute: __Host-_xsrf
       header: X-XSRF-TOKEN

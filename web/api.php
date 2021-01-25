@@ -13,6 +13,7 @@ require_once "$baseDir/vendor/autoload.php";
 
 $appDir = "$baseDir/app";
 $appDebug = getenv('APP_DEBUG') ?: true;
+$appHost = getenv('APP_HOST') ?: 'localhost';
 
 /** @var ContainerInterface $container */
 $container = (new WebBootstrap)(new Injector, [
@@ -28,8 +29,9 @@ $container = (new WebBootstrap)(new Injector, [
     'log_dir' => getenv('APP_LOG_DIR') ?: "$baseDir/var/logs",
     'cache_dir' => getenv('APP_CACHE_DIR') ?: "$baseDir/var/cache",
     'scheme' => getenv('APP_SCHEME') ?: 'http',
-    'host' => getenv('APP_HOST') ?: 'localhost',
-    'port' => getenv('APP_PORT') ?: 80
+    'host' => $appHost,
+    'port' => getenv('APP_PORT') ?: 80,
+    'domain' => getenv('APP_DOMAIN') ?: $appHost
 ]);
 
 (new SapiStreamEmitter)->emit(

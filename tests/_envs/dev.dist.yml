@@ -3,10 +3,10 @@ modules:
     \Helper\Api:
       url: '%APP_SCHEME%://%APP_HOST%'
       elasticsearch:
-        url: '%APP_SCHEME%://%APP_HOST%:9200'
+        url: http://localhost:9200
         username: elastic
         password: '%ELASTIC_PASSWORD%'
       cookies:
-        domain: '.%APP_HOST%'
+        domain: '.%APP_DOMAIN%'
         jwt: dev-_jwt
         xsrf: dev-_xsrf
