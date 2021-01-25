@@ -2,6 +2,9 @@
 Bitcoin based payments framework for scalable web applications.
 
 ```
+$ git clone https://github.com/satbased/satbased && cd satbased
+$ git submodule update --init --recursive
+$ npm --prefix var/docker/lightningd/plugins/amqp-relay install var/docker/lightningd/plugins/amqp-relay
 $ composer --ignore-platform-reqs install
 $ docker-compose up -d
 # wait a few moments while cluster initialises
