@@ -66,16 +66,7 @@ final class PaymentRescanManager implements MessageHandlerInterface
         switch (true) {
             case $service instanceof LightningServiceInterface:
                 /** @var LightningServiceInterface $service */
-                switch (true) {
-                    case $service instanceof LndService:
-                        $lightningInvoice = $service->getInvoice((string)$paymentTransaction->getPreimageHash());
-                        break;
-                    case $service instanceof LightningdService:
-                        $lightningInvoice = $service->getInvoice((string)$paymentTransaction->getLabel());
-                        break;
-                    default:
-                        throw new DomainException(sprintf("Unhandled service '%s'.", get_class($service)));
-                }
+                $lightningInvoice = $service->getInvoice($paymentTransaction->getPreimageHash());
                 if ($lightningInvoice && $lightningInvoice->getState()->isSettled()) {
                     $this->then(SettlePayment::fromNative([
                         'paymentId' => (string)$payment->getPaymentId(),

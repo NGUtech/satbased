@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+bin/stack bitcoin createwallet "default" > /dev/null 2>&1
 bin/stack bitcoin generate 1
 
 BITCOIN_HEIGHT=$(bin/stack bitcoin getblockchaininfo | jq '.blocks' | tr -d '"')
