@@ -208,7 +208,7 @@ class TransferPaymentRequestCest
 
         $I->getAccount($accountId);
         $I->seeResponseContainsJson(['_source' => [
-            'wallet' => ['MSAT' => '1000105000MSAT']
+            'wallet' => ['MSAT' => '10000105000MSAT']
         ]]);
     }
 }

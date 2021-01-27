@@ -75,6 +75,26 @@ class LndPaymentMakeCest
         ]]);
     }
 
+    public function makePaymentWithInsufficentBalance(ApiTester $I): void
+    {
+        $I->runStack('alice', 'addinvoice 4000000');
+        $paymentRequest = current($I->grabDataFromOutputByJsonPath('$.payment_request'));
+
+        $this->loginProfile($I, 'customer-verified');
+        $I->sendPOST(self::URL_PATTERN, [
+            'service' => 'testlnd',
+            'description' => 'payment description',
+            'amount' => '4000000SAT',
+            'transaction' => ['request' => $paymentRequest]
+        ]);
+        $I->seeHttpHeader('Content-Type', 'application/json');
+        $I->seeResponseCodeIs(HttpCode::UNPROCESSABLE_ENTITY);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(['errors' => [
+            'amount' => ['Insufficient balance.']
+        ]]);
+    }
+
     public function makePaymentUnderMinimiumAmount(ApiTester $I): void
     {
         $I->runStack('bob', 'addinvoice 1');
@@ -85,6 +105,26 @@ class LndPaymentMakeCest
             'service' => 'testlnd',
             'description' => 'payment description',
             'amount' => '1SAT',
+            'transaction' => ['request' => $paymentRequest]
+        ]);
+        $I->seeHttpHeader('Content-Type', 'application/json');
+        $I->seeResponseCodeIs(HttpCode::UNPROCESSABLE_ENTITY);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(['errors' => [
+            'transaction' => ['Payment service cannot send given amount.']
+        ]]);
+    }
+
+    public function makePaymentOverMaximumAmount(ApiTester $I): void
+    {
+        $I->runStack('bob', 'addinvoice 9000000');
+        $paymentRequest = current($I->grabDataFromOutputByJsonPath('$.payment_request'));
+
+        $this->loginProfile($I, 'staff-verified');
+        $I->sendPOST(self::URL_PATTERN, [
+            'service' => 'testlnd',
+            'description' => 'payment description',
+            'amount' => '0.09BTC',
             'transaction' => ['request' => $paymentRequest]
         ]);
         $I->seeHttpHeader('Content-Type', 'application/json');
@@ -214,7 +254,7 @@ class LndPaymentMakeCest
         $accountId = current($I->grabDataFromResponseByJsonPath('$._source.accountId'));
         $I->getAccount($accountId);
         $I->seeResponseContainsJson(['_source' => [
-            'wallet' => ['MSAT' => '999900000MSAT']
+            'wallet' => ['MSAT' => '9999900000MSAT']
         ]]);
 
         $I->sendGET(sprintf(self::URL_APPROVE_PATTERN, $paymentId), ['t' => $approvalToken]);

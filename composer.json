@@ -1,8 +1,8 @@
 {
-    "name": "satbased/satbased",
+    "name": "ngutech/satbased",
     "type": "project",
     "description": "Bitcoin based payments framework for scalable web applications.",
-    "homepage": "https://github.com/satbased/satbased",
+    "homepage": "https://github.com/NGUtech/satbased",
     "license": "MPL-2.0",
     "prefer-stable": true,
     "minimum-stability": "dev",

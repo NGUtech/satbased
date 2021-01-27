@@ -145,7 +145,7 @@ class BitcoindPaymentMakeCest
         $accountId = current($I->grabDataFromResponseByJsonPath('$._source.accountId'));
         $I->getAccount($accountId);
         $I->seeResponseContainsJson(['_source' => [
-            'wallet' => ['MSAT' => 1000000000-5000000-intval($feeEstimate).'MSAT']
+            'wallet' => ['MSAT' => 10000000000-5000000-intval($feeEstimate).'MSAT']
         ]]);
 
         $I->sendPOST(sprintf(self::URL_CANCEL_PATTERN, $paymentId));
@@ -163,7 +163,7 @@ class BitcoindPaymentMakeCest
 
         $I->getAccount($accountId);
         $I->seeResponseContainsJson(['_source' => [
-            'wallet' => ['MSAT' => '1000000000MSAT']
+            'wallet' => ['MSAT' => '10000000000MSAT']
         ]]);
     }
 
@@ -296,7 +296,7 @@ class BitcoindPaymentMakeCest
         $accountId = current($I->grabDataFromResponseByJsonPath('$._source.accountId'));
         $I->getAccount($accountId);
         $I->seeResponseContainsJson(['_source' => [
-            'wallet' => ['MSAT' => 1000000000-5000000-intval($feeEstimate).'MSAT']
+            'wallet' => ['MSAT' => 10000000000-5000000-intval($feeEstimate).'MSAT']
         ]]);
 
         $I->sendGET(sprintf(self::URL_APPROVE_PATTERN, $paymentId), ['t' => $approvalToken]);
@@ -336,7 +336,7 @@ class BitcoindPaymentMakeCest
 
         $I->getAccount($accountId);
         $I->seeResponseContainsJson(['_source' => [
-            'wallet' => ['MSAT' => 1000000000-5000000-intval($feeSettled).'MSAT']
+            'wallet' => ['MSAT' => 10000000000-5000000-intval($feeSettled).'MSAT']
         ]]);
     }
 

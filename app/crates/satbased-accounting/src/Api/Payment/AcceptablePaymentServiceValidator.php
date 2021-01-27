@@ -5,6 +5,7 @@ namespace Satbased\Accounting\Api\Payment;
 use Daikon\Interop\Assert;
 use Daikon\Interop\Assertion;
 use Daikon\Money\Service\PaymentServiceMap;
+use Daikon\Money\ValueObject\MoneyInterface;
 use Daikon\Validize\Validator\Validator;
 use Daikon\ValueObject\Text;
 use Daikon\ValueObject\TextList;
@@ -22,13 +23,18 @@ final class AcceptablePaymentServiceValidator extends Validator
     /** @param mixed $input */
     protected function validateAccepts($input): TextList
     {
+        $imports = $this->getImports();
+        Assertion::isInstanceOf($imports['amount'], MoneyInterface::class, 'Amount is not validated.');
+
+        $availableServices = $this->paymentServiceMap->availableForRequest($imports['amount']);
+
         Assert::that($input, 'Invalid services.')
             ->isArray('Must be an array.')
             ->notEmpty('Must not be empty.')
             ->all()
             ->string()
             ->notBlank()
-            ->satisfy([$this->paymentServiceMap, 'has'], 'Unknown service.');
+            ->satisfy([$availableServices, 'has'], 'Unacceptable service.');
 
         return TextList::fromNative($input);
     }

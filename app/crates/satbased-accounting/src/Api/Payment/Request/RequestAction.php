@@ -33,10 +33,15 @@ final class RequestAction extends PaymentAction
     public function getValidator(DaikonRequest $request): ?ValidatorInterface
     {
         return $this->requestValidator
-            ->error('amount', MoneyValidator::class, ['convert' => SatoshiCurrencies::MSAT, 'min' => '1MSAT'])
             ->error('description', TextValidator::class, ['required' => false])
-            ->error('accepts', AcceptablePaymentServiceValidator::class, [
+            ->error('amount', MoneyValidator::class, [
+                'convert' => SatoshiCurrencies::MSAT,
+                'min' => '1MSAT',
+                'provides' => 'valid_amount'
+            ])->error('accepts', AcceptablePaymentServiceValidator::class, [
+                'depends' => 'valid_amount',
                 'required' => false,
+                'import' => 'amount',
                 'default' => TextList::makeEmpty()
             ])->error('expires', TimestampValidator::class, [
                 'required' => false,

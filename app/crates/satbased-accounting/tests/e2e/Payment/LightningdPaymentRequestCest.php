@@ -51,7 +51,6 @@ class LightningdPaymentRequestCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson(['errors' => [
             'references' => ['Must be an array.'],
-            'accepts' => ['Must be an array.'],
             'amount' => ['Must be a string.'],
             'description' => ['Must be a string.']
         ]]);
@@ -70,6 +69,21 @@ class LightningdPaymentRequestCest
         $I->seeResponseContainsJson(['errors' => [
             'amount' => ['Amount must be at least 1MSAT.']
         ]]);
+    }
+
+    public function requestPaymentOverMaximumForAcceptableService(ApiTester $I): void
+    {
+        $this->loginProfile($I, 'customer-verified');
+        $I->sendPOST(self::URL_REQUEST_PATTERN, [
+            'references' => ['someid' => 'someref'],
+            'accepts' => ['testlightningd'],
+            'description' => 'payment description',
+            'amount' => '1BTC',
+        ]);
+        $I->seeHttpHeader('Content-Type', 'application/json');
+        $I->seeResponseCodeIs(HttpCode::UNPROCESSABLE_ENTITY);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(['errors' => ['accepts' => ['Unacceptable service.']]]);
     }
 
     public function requestPaymentAndRescan(ApiTester $I): void

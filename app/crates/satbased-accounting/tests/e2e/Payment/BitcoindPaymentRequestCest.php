@@ -50,7 +50,6 @@ class BitcoindPaymentRequestCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson(['errors' => [
             'references' => ['Must be an array.'],
-            'accepts' => ['Must not be empty.'],
             'amount' => ['Must be a string.'],
             'description' => ['Must be a string.']
         ]]);
@@ -83,7 +82,22 @@ class BitcoindPaymentRequestCest
         $I->seeHttpHeader('Content-Type', 'application/json');
         $I->seeResponseCodeIs(HttpCode::UNPROCESSABLE_ENTITY);
         $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(['errors' => ['accepts' => ['Unknown service.']]]);
+        $I->seeResponseContainsJson(['errors' => ['accepts' => ['Unacceptable service.']]]);
+    }
+
+    public function requestPaymentOverMaximumForAcceptableService(ApiTester $I): void
+    {
+        $this->loginProfile($I, 'customer-verified');
+        $I->sendPOST(self::URL_REQUEST_PATTERN, [
+            'references' => ['someid' => 'someref'],
+            'accepts' => ['testbitcoind'],
+            'description' => 'payment description',
+            'amount' => '22000000BTC',
+        ]);
+        $I->seeHttpHeader('Content-Type', 'application/json');
+        $I->seeResponseCodeIs(HttpCode::UNPROCESSABLE_ENTITY);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(['errors' => ['accepts' => ['Unacceptable service.']]]);
     }
 
     public function requestPaymentAndSelectUnacceptableService(ApiTester $I): void

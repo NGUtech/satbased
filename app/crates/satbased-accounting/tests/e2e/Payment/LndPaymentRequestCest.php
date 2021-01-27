@@ -42,6 +42,7 @@ class LndPaymentRequestCest
         $this->loginProfile($I, 'customer-verified');
         $I->sendPOST(self::URL_REQUEST_PATTERN, [
             'references' => '',
+            'accepts' => '',
             'amount' => 1,
             'description' => 123
         ]);
@@ -68,6 +69,21 @@ class LndPaymentRequestCest
         $I->seeResponseContainsJson(['errors' => [
             'amount' => ['Amount must be at least 1MSAT.']
         ]]);
+    }
+
+    public function requestPaymentOverMaximumForAcceptableService(ApiTester $I): void
+    {
+        $this->loginProfile($I, 'customer-verified');
+        $I->sendPOST(self::URL_REQUEST_PATTERN, [
+            'references' => ['someid' => 'someref'],
+            'accepts' => ['testlnd'],
+            'description' => 'payment description',
+            'amount' => '1BTC',
+        ]);
+        $I->seeHttpHeader('Content-Type', 'application/json');
+        $I->seeResponseCodeIs(HttpCode::UNPROCESSABLE_ENTITY);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(['errors' => ['accepts' => ['Unacceptable service.']]]);
     }
 
     public function requestHoldPaymentAndCancel(ApiTester $I): void
@@ -113,7 +129,7 @@ class LndPaymentRequestCest
         $accountId = current($I->grabDataFromResponseByJsonPath('$._source.accountId'));
         $I->getAccount($accountId);
         $I->seeResponseContainsJson(['_source' => [
-            'wallet' => ['MSAT' => '1000000000MSAT']
+            'wallet' => ['MSAT' => '10000000000MSAT']
         ]]);
     }
 
@@ -159,7 +175,7 @@ class LndPaymentRequestCest
         $accountId = current($I->grabDataFromResponseByJsonPath('$._source.accountId'));
         $I->getAccount($accountId);
         $I->seeResponseContainsJson(['_source' => [
-            'wallet' => ['MSAT' => '1000000000MSAT']
+            'wallet' => ['MSAT' => '10000000000MSAT']
         ]]);
     }
 
@@ -315,7 +331,7 @@ class LndPaymentRequestCest
         $accountId = current($I->grabDataFromResponseByJsonPath('$._source.accountId'));
         $I->getAccount($accountId);
         $I->seeResponseContainsJson(['_source' => [
-            'wallet' => ['MSAT' => '1000101001MSAT']
+            'wallet' => ['MSAT' => '10000101001MSAT']
         ]]);
 
         $I->getPayment($paymentId);
