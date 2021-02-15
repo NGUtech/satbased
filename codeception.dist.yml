@@ -1,6 +1,6 @@
 # suite config
 suites:
-  api:satbased-accounting:
+  satbased-accounting:
     actor: ApiTester
     path: app/crates/satbased-accounting/tests/e2e
     modules:
@@ -13,7 +13,7 @@ suites:
         \Helper\Api:
           depends: PhpBrowser
 
-  api:satbased-security:
+  satbased-security:
     actor: ApiTester
     path: app/crates/satbased-security/tests/e2e
     modules:

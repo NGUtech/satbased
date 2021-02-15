@@ -148,10 +148,12 @@ final class PaymentService
         /** @var PaymentServiceInterface $paymentService */
         $paymentService = $payload['service'];
         $paymentId = (string)$payment->getPaymentId();
+        $preimage = isset($payload['secret']) ? (string)$payload['secret'] : $paymentId;
+
         switch (true) {
             case $paymentService instanceof LightningServiceInterface:
                 $transaction = LightningInvoice::fromNative([
-                    'preimage' => $this->generatePreimage((string)$payload['secret'] ?: $paymentId),
+                    'preimage' => $this->generatePreimage($preimage),
                     'amount' => (string)$amount,
                     'label' => $paymentId,
                     'cltvExpiry' => 18,

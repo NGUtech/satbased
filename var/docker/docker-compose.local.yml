@@ -41,7 +41,7 @@ services:
 
   kibana:
     container_name: ${COMPOSE_PROJECT_NAME}_kibana
-    image: docker.elastic.co/kibana/kibana:7.9.0
+    image: docker.elastic.co/kibana/kibana:7.11.0
     ports:
       - "5601:5601"
     environment:

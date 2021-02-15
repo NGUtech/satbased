@@ -36,7 +36,7 @@ $ cd doc && mkdocs serve
 - Webserver: http://local.satbased.com
 - CouchDB Admin: http://local.satbased.com:5984/_utils (couch/couch)
 - RabbitMQ Admin: http://local.satbased.com:15672 (rabbit/rabbit)
-- Kibana: http://local.satbased.com:5601
+- Kibana: http://local.satbased.com:5601 (elastic/elastic)
 - Workers:
   - bin/daikon -vv worker:run bitcoind.adapter.messages bitcoind.adapter.message_queue
   - bin/daikon -vv worker:run lightningd.adapter.messages lightningd.adapter.message_queue

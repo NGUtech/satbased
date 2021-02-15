@@ -13,7 +13,7 @@
         }
     ],
     "require": {
-        "php": "^7.4",
+        "php": "^7.4|^8.0",
         "daikon/boot": "master@dev",
         "daikon/money-interop": "master@dev",
         "daikon/security-interop": "master@dev",
@@ -29,7 +29,7 @@
         "lnpay/php-lnd-grpc": "dev-master as 0.10.4-beta"
     },
     "require-dev": {
-        "codeception/codeception": "^4.0",
+        "codeception/codeception": "^4.1",
         "codeception/module-asserts": "^1.2",
         "codeception/module-cli": "^1.0",
         "codeception/module-rest": "^1.2",
